@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no"/>
+<meta name="theme-color" content="#f5f8fb"/>
+<title>DIMENSION｜回して、つくる。</title>
+<style>
+:root{--ink:#152e3e;--sub:#708695;--teal:#16a5b7;--teal2:#55ccda;--gold:#ef9e61;--bg:#f5f8fb;--stroke:#e5ebf0;--shadow:0 12px 36px rgba(22,65,90,.085)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;font-family:ui-rounded,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,system-ui,sans-serif;color:var(--ink);background:var(--bg)}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #4bbad4;outline-offset:2px}
+.app{width:min(100%,495px);margin:0 auto;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 12px) 17px calc(env(safe-area-inset-bottom) + 12px);display:flex;flex-direction:column;gap:11px}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:37px}.brand{display:flex;flex-direction:column;line-height:1}.brand strong{font-size:19px;font-weight:850;letter-spacing:.17em}.brand small{font-size:9px;letter-spacing:.19em;color:#8ba1ae;font-weight:700;margin-top:5px}.topBtns{display:flex;gap:6px}.iconBtn{background:white;color:#657e8c;width:36px;height:36px;border:1px solid var(--stroke);border-radius:13px;display:grid;place-items:center;font-size:18px;box-shadow:0 3px 9px #233b4e08}
+.progress{display:flex;gap:5px;height:4px}.progress i{flex:1;border-radius:10px;background:#e0e8ed;transition:background .35s}.progress i.on{background:#22acbf}
+.goal{height:clamp(148px,24dvh,212px);min-height:148px;position:relative;border-radius:25px;background:linear-gradient(135deg,#112e3f,#071d2c);overflow:hidden;isolation:isolate;box-shadow:var(--shadow)}.goal:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 54% 53%,#155a6e40,transparent 67%)}.goal canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}.goalLabel{position:absolute;left:18px;top:16px;z-index:2;pointer-events:none;color:#9dc0cd;font-size:10px;letter-spacing:.14em;font-weight:800}.goalLabel strong{display:block;color:white;font-size:16px;letter-spacing:.03em;margin-top:6px}.goalBottom{position:absolute;bottom:13px;left:17px;right:17px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:2}.goalBottom span{font-size:10px;color:#9dbdc9}.cutBtn{pointer-events:auto;border:1px solid #6597a066;background:#174354bb;color:#d5f6ff;border-radius:99px;padding:6px 10px;font-size:10px;font-weight:700}.cutBtn[hidden]{display:none}
+.work{flex:1;position:relative;min-height:245px;border:1px solid #e3ebf1;background:white;border-radius:25px;overflow:hidden;box-shadow:var(--shadow)}.work:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 38%,#f9fcfd,transparent 70%)}
+.workCaption{pointer-events:none;position:absolute;z-index:3;top:15px;left:17px;color:#8c9eab;font-size:11px;letter-spacing:.06em;font-weight:700}.workCaption strong{font-size:14px;color:var(--ink);display:block;letter-spacing:0;margin-top:4px}
+#editor{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}#editor.grabbing{cursor:grabbing}
+#resultView{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .6s ease;z-index:1}.work.showResult #resultView{opacity:1}.work.showResult #editor{opacity:0}.work.showResult #resultView{pointer-events:auto}.workCaption{transition:opacity .2s}.work.showResult .workCaption{opacity:0}
+.workFooter{position:absolute;bottom:13px;left:0;right:0;text-align:center;pointer-events:none;color:#96a8b3;font-size:11px;z-index:4;transition:opacity .2s}.work.showResult .workFooter{opacity:0}
+.status{min-height:33px;padding:0 4px;display:flex;align-items:center;justify-content:space-between;gap:12px}.status .left{display:flex;align-items:center;gap:6px;color:#6e8490;font-size:11px}.chipDot{width:8px;height:8px;border-radius:50%;background:var(--gold)}.chipLine{width:14px;height:3px;background:var(--teal);border-radius:9px;display:inline-block}.status .right{color:#90a1ac;font-size:11px;white-space:nowrap}
+.bottom{display:flex;gap:10px}.primary{flex:1;height:60px;border:0;border-radius:18px;background:linear-gradient(125deg,#1aaabd,#0b92ad);box-shadow:0 9px 22px #118eab30;color:white;font-weight:800;font-size:16px;letter-spacing:.08em;display:flex;align-items:center;justify-content:center;gap:11px;transition:transform .12s,filter .15s}.primary:active{transform:scale(.975)}.primary:disabled{opacity:.75}.secondary{height:60px;min-width:60px;border:1px solid var(--stroke);background:white;color:#3d7382;border-radius:18px;font-size:22px}.secondary[hidden]{display:none}
+.resultBubble{position:absolute;z-index:4;left:50%;top:18px;transform:translateX(-50%) translateY(-12px);border-radius:100px;padding:10px 17px;white-space:nowrap;background:#ffffffec;box-shadow:0 5px 25px #071d2c16;font-size:13px;font-weight:800;color:var(--ink);opacity:0;transition:.32s;pointer-events:none}.resultBubble.show{opacity:1;transform:translateX(-50%) translateY(0)}.resultBubble.win{background:#e6faf5;color:#198e83}
+.replay{position:absolute;right:15px;bottom:15px;z-index:5;border:1px solid #b4e3eb;background:#f6feff;color:#428b9d;border-radius:100px;font-weight:750;font-size:11px;padding:9px 12px;display:none}.work.showResult .replay{display:block}
+.hint{position:absolute;inset:0;z-index:10;background:#0f2635ed;display:none;color:white;padding:27px 29px;align-items:center;justify-content:center;flex-direction:column;gap:13px;text-align:center}.hint.open{display:flex}.hint .huge{font-size:36px}.hint h2{font-size:18px;margin:0}.hint p{font-size:13px;line-height:1.95;color:#c8e0e9;margin:0}.hint button{background:#2ab4c5;color:#fff;border:0;padding:12px 30px;border-radius:50px;font-weight:800;margin-top:7px}
+.spark{position:absolute;z-index:8;pointer-events:none;width:7px;height:7px;border-radius:3px;background:#50ccda;animation:burst .8s ease-out forwards}@keyframes burst{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(150deg) scale(.5)}}
+@media (max-height:740px){.app{gap:8px;padding-top:calc(env(safe-area-inset-top) + 8px);padding-bottom:calc(env(safe-area-inset-bottom) + 7px)}.goal{height:clamp(135px,23dvh,185px)}.work{min-height:218px}.status{min-height:23px}.primary,.secondary{height:52px}}@media (min-height:900px){.work{min-height:350px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><div class="brand"><strong>DIMENSION</strong><small>ONE LINE. TWO TURNS. THREE DIMENSIONS.</small></div><div class="topBtns"><button class="iconBtn" id="soundBtn" aria-label="音を切り替える">♫</button><button class="iconBtn" id="helpBtn" aria-label="遊び方">?</button></div></header>
+<div class="progress" id="progress"></div>
+<section class="goal"><canvas id="goalGL" aria-label="目標の立体"></canvas><div class="goalLabel">YOUR MISSION<strong>この立体をつくろう</strong></div><div class="goalBottom"><span id="levelLabel">LEVEL 01 / 10</span><button class="cutBtn" id="cutBtn" hidden>断面表示 ON</button></div></section>
+<section class="work" id="work"><div class="workCaption"><span id="phaseName">01 — LINE</span><strong id="workName">線を置こう</strong></div><canvas id="editor" aria-label="線の位置を変える操作エリア"></canvas><canvas id="resultView" aria-label="回転でできた立体"></canvas><div class="resultBubble" id="resultBubble"></div><div class="workFooter" id="workFooter">● 両端を動かす　／　線をつかんで移動</div><button class="replay" id="replay">↻ もう一度見る</button><div class="hint" id="help"><div class="huge">━ &nbsp;◯ &nbsp;◉</div><h2>1本の線から、立体を。</h2><p>線の両端を指で動かそう。<br>① 点のまわりに回すと「面」に。<br>② 線のまわりに回すと「立体」に。<br>上の立体と同じ形になったらクリア。</p><button id="helpClose">やってみる</button></div></section>
+<div class="status"><div class="left"><span class="chipDot"></span><span>① 点のまわり</span><span style="margin:0 4px;color:#b8c6ce">→</span><span class="chipLine"></span><span>② 線のまわり</span></div><div class="right" id="levelCounter">01 / 10</div></div>
+<div class="bottom"><button class="secondary" id="backBtn" aria-label="線を編集し直す" hidden>↶</button><button class="primary" id="mainBtn"><span id="btnIcon">↻</span><span id="btnText">回してみる</span></button></div>
+</div>
+<script>
+(()=>{'use strict';
+// All geometric units are mathematical units. The first rotation creates exactly
+// the annulus swept by the segment about the point-axis perpendicular to the screen.
+// Revolving that region around the horizontal second axis produces the 3-D solid.
+const $=id=>document.getElementById(id);
+const LEVELS=[
+ {kind:'sphere',name:'はじめての球',major:0,outer:1.5,inner:0,tip:'まずは、球をつくろう'},
+ {kind:'sphere',name:'大きな球',major:0,outer:2.5,inner:0,tip:'もっと大きく'},
+ {kind:'torus',name:'リング',major:3,outer:1,inner:0,tip:'真ん中に穴をつくろう'},
+ {kind:'torus',name:'ふっくらリング',major:3,outer:1.5,inner:0,tip:'輪の太さが変わる'},
+ {kind:'shell',name:'空洞の球',major:0,outer:2.5,inner:1,tip:'内側に空間を残そう'},
+ {kind:'torus',name:'細いリング',major:3.5,outer:.75,inner:0,tip:'細く、美しく'},
+ {kind:'shell',name:'薄い球殻',major:0,outer:2.5,inner:1.75,tip:'面の内側を空けよう'},
+ {kind:'tube',name:'空洞の輪',major:3.5,outer:1.5,inner:.75,tip:'輪の断面にも穴を'},
+ {kind:'torus',name:'大きな輪',major:3,outer:2,inner:0,tip:'すこし複雑な輪'},
+ {kind:'tube',name:'マスター',major:3.5,outer:2,inner:1,tip:'最後の立体に挑戦'}
+];
+const S={idx:0,phase:'edit',a:{x:1.3,y:-1.4},b:{x:2.3,y:-.9},drag:null,w:0,h:0,unit:30,cx:0,cy:0,tryParams:null,win:false,cut:true,muted:false,readyTime:0,spinStart:0,editCanvas:$('editor'),ctx:$('editor').getContext('2d'),raf:0};
+let unlocked=0;try{unlocked=+(localStorage.getItem('dimension-unlocked')||0)}catch(e){}
+let audio=null;
+function tone(type='tap'){
+ if(S.muted)return;
+ try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let now=audio.currentTime;
+ const notes=type==='win'?[523.25,659.25,783.99,1046.5]:type==='fail'?[392,523.25]:type==='open'?[440,554.37]:[587.33];
+ notes.forEach((f,i)=>{let o=audio.createOscillator(),g=audio.createGain(),lp=audio.createBiquadFilter();o.type='sine';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=2200;
+ const t=now+(type==='win'?i*.082:i*.045),amp=type==='win'?.052:.025;
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(amp,t+.014);g.gain.exponentialRampToValueAtTime(.0001,t+(type==='win'?.65:.23));o.connect(lp);lp.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+(type==='win'?.72:.3));});
+ }catch(e){}
+}
+const shaderV='attribute vec2 aPos;varying vec2 vUv;void main(){vUv=aPos*.5+.5;gl_Position=vec4(aPos,0.,1.);}';
+const shaderF=`precision highp float;
+varying vec2 vUv;uniform vec2 uRes;uniform float uMajor,uOuter,uInner,uTime,uCut,uYaw;
+float scene(vec3 p){float rad=length(vec2(length(p.xz)-uMajor,p.y));float d=max(rad-uOuter,uInner-rad);if(uInner<.01)d=rad-uOuter;
+if(uCut>.5&&uInner>.01)d=max(d,min(p.x-.015,p.z-.015));return d;}
+vec3 normalAt(vec3 p){float e=.009;vec2 h=vec2(e,0.);return normalize(vec3(scene(p+h.xyy)-scene(p-h.xyy),scene(p+h.yxy)-scene(p-h.yxy),scene(p+h.yyx)-scene(p-h.yyx)));}
+float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+void main(){vec2 uv=(gl_FragCoord.xy-.5*uRes)/min(uRes.x,uRes.y);
+float sz=max(1.0,uMajor+uOuter);float cy=uYaw;
+vec3 eye=vec3(2.2*sz*cos(cy),1.38*sz,2.2*sz*sin(cy));vec3 fw=normalize(-eye);vec3 rt=normalize(cross(fw,vec3(0.,1.,0.)));vec3 up=cross(rt,fw);
+vec3 rd=normalize(fw+uv.x*1.37*rt+uv.y*1.37*up);vec3 ro=eye;
+vec3 bg=mix(vec3(.037,.105,.151),vec3(.025,.071,.116),smoothstep(-.5,.5,uv.y));
+float halo=exp(-3.6*dot(uv,uv));bg+=vec3(.016,.076,.081)*halo;
+vec2 grid=floor(vUv*uRes/19.);float h=hash(grid);float star=smoothstep(.988,1.,h)*.17;bg+=vec3(star*.48,star*.79,star);
+float t=0.;float hit=0.;vec3 p=ro;
+for(int i=0;i<90;i++){p=ro+rd*t;float d=scene(p);if(d<.006*sz){hit=1.;break;}t+=max(.012*sz,d*.88);if(t>sz*8.6)break;}
+if(hit>.5){vec3 n=normalAt(p);vec3 light=normalize(vec3(-.55,.86,1.05));float ndl=max(0.,dot(n,light));vec3 view=normalize(ro-p);vec3 hv=normalize(light+view);float spec=pow(max(0.,dot(n,hv)),36.);
+float rim=pow(1.-max(0.,dot(n,view)),2.6);
+vec3 col=vec3(.035,.40,.51)*(0.48+0.53*ndl)+vec3(.11,.48,.49)*ndl*.42;
+col+=vec3(.30,.72,.73)*spec*.38;col+=vec3(.05,.34,.42)*rim;
+float isCut=step(.5,uCut)*step(.01,uInner)*(1.-smoothstep(.005*sz,.025*sz,abs(p.x-.015)))*step(.015,p.z);
+col=mix(col,vec3(.58,.82,.76),isCut*.45);
+col=pow(col,vec3(.88));col+=vec3(.027,.045,.045);
+bg=col;
+}
+gl_FragColor=vec4(bg,1.);
+}`;
+function makeGL(canvas){
+ let gl=canvas.getContext('webgl',{alpha:false,antialias:true,preserveDrawingBuffer:false,powerPreference:'default'});
+ if(!gl)return null;
+ const makeShader=(type,source)=>{let s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s};
+ try{let prog=gl.createProgram();gl.attachShader(prog,makeShader(gl.VERTEX_SHADER,shaderV));gl.attachShader(prog,makeShader(gl.FRAGMENT_SHADER,shaderF));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error('shader link');gl.useProgram(prog);let buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);let loc=gl.getAttribLocation(prog,'aPos');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);return{gl,uniform:Object.fromEntries(['uRes','uMajor','uOuter','uInner','uTime','uCut','uYaw'].map(x=>[x,gl.getUniformLocation(prog,x)]))};}
+ catch(err){console.warn('3D renderer fallback',err);return null}
+}
+const goal3D=makeGL($('goalGL')),result3D=makeGL($('resultView'));
+function resizeGL(o,canvas){if(!o)return;let r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.32),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}o.gl.viewport(0,0,w,h)}
+const fallbackCache=new Map();
+function software3D(canvas,p,yaw,cut){
+ // Small, self-contained CPU ray marcher for browsers that disable WebGL.
+ // It renders the same implicit rotational solid as the GPU shader, including cutaways.
+ const rw=Math.max(2,Math.round(canvas.clientWidth)),rh=Math.max(2,Math.round(canvas.clientHeight));
+ if(canvas.width!==rw||canvas.height!==rh){canvas.width=rw;canvas.height=rh}
+ let key=[rw,rh,p.major,p.outer,p.inner,yaw.toFixed(2),cut?1:0].join(':');
+ let cached=fallbackCache.get(key);let ctx=canvas.getContext('2d');
+ if(cached){ctx.putImageData(cached,0,0);return}
+ const res=.76;let w=Math.round(rw*res),h=Math.round(rh*res);
+ let low=document.createElement('canvas');low.width=w;low.height=h;let lc=low.getContext('2d');let image=lc.createImageData(w,h),pixels=image.data;
+ let norm=(a)=>{let q=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/q,a[1]/q,a[2]/q]};let dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];let cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+ let sz=Math.max(1,p.major+p.outer),eye=[2.2*sz*Math.cos(yaw),1.38*sz,2.2*sz*Math.sin(yaw)],forward=norm(eye.map(z=>-z)),right=norm(cross(forward,[0,1,0])),up=cross(right,forward),light=norm([-.55,.86,1.05]);
+ let scene=(x,y,z)=>{let rad=Math.hypot(Math.hypot(x,z)-p.major,y);let d=rad-p.outer;if(p.inner>.01)d=Math.max(d,p.inner-rad);if(cut&&p.inner>.01)d=Math.max(d,Math.min(x-.015,z-.015));return d};
+ let outer=sz*1.04,ro2=dot(eye,eye),minSize=Math.min(w,h),ci=0;
+ for(let py=0;py<h;py++){
+  for(let px=0;px<w;px++){
+   let uvx=(px+.5-w*.5)/minSize,uvy=(h*.5-(py+.5))/minSize;
+   let dx=forward[0]+1.37*(uvx*right[0]+uvy*up[0]),dy=forward[1]+1.37*(uvx*right[1]+uvy*up[1]),dz=forward[2]+1.37*(uvx*right[2]+uvy*up[2]);
+   let inv=1/Math.hypot(dx,dy,dz);dx*=inv;dy*=inv;dz*=inv;
+   let halo=Math.exp(-3.6*(uvx*uvx+uvy*uvy)),fade=clamp(uvy+.5,0,1);
+   let R=9+7*halo+2*fade,G=26+17*halo+3*fade,B=41+18*halo+2*fade;
+   let bc=eye[0]*dx+eye[1]*dy+eye[2]*dz,disc=bc*bc-ro2+outer*outer;
+   if(disc>0){
+    let t=Math.max(0,-bc-Math.sqrt(disc)),limit=-bc+Math.sqrt(disc),hit=false,x=0,y=0,z=0;
+    for(let n=0;n<65&&t<=limit+.025*sz;n++){
+     x=eye[0]+dx*t;y=eye[1]+dy*t;z=eye[2]+dz*t;
+     let d=scene(x,y,z);
+     if(d<.0048*sz){hit=true;break}
+     t+=Math.max(.012*sz,d*.86);
+    }
+    if(hit){let e=.011*sz;
+     let nn=norm([scene(x+e,y,z)-scene(x-e,y,z),scene(x,y+e,z)-scene(x,y-e,z),scene(x,y,z+e)-scene(x,y,z-e)]);
+     let ndl=Math.max(0,dot(nn,light)),view=norm([eye[0]-x,eye[1]-y,eye[2]-z]),half=norm([view[0]+light[0],view[1]+light[1],view[2]+light[2]]),spec=Math.pow(Math.max(0,dot(nn,half)),34),rim=Math.pow(1-Math.max(0,dot(nn,view)),2.6);
+     let isCut=cut&&p.inner>.01&&(Math.abs(x-.015)<.038*sz||Math.abs(z-.015)<.038*sz);
+     let shade=.35+.65*ndl;
+     R=18*shade+20*ndl+118*spec+12*rim+8;
+     G=116*shade+48*ndl+92*spec+64*rim+16;
+     B=147*shade+45*ndl+105*spec+75*rim+23;
+     if(isCut){R=R*.7+160*.3;G=G*.7+212*.3;B=B*.7+207*.3}
+    }
+   }
+   pixels[ci++]=Math.min(255,R);pixels[ci++]=Math.min(255,G);pixels[ci++]=Math.min(255,B);pixels[ci++]=255;
+  }
+ }
+ lc.putImageData(image,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(low,0,0,rw,rh);
+ // Cache final full-size image so resize/other UI changes do not repeat ray marching.
+ let snapshot=ctx.getImageData(0,0,rw,rh);fallbackCache.set(key,snapshot);if(fallbackCache.size>12)fallbackCache.delete(fallbackCache.keys().next().value);
+}
+function renderGL(o,canvas,p,sec,yaw,cut){if(!o){software3D(canvas,p,yaw,cut);return}resizeGL(o,canvas);let {gl,uniform:u}=o;gl.useProgram(gl.getParameter(gl.CURRENT_PROGRAM));gl.uniform2f(u.uRes,canvas.width,canvas.height);gl.uniform1f(u.uMajor,p.major);gl.uniform1f(u.uOuter,p.outer);gl.uniform1f(u.uInner,p.inner);gl.uniform1f(u.uTime,sec);gl.uniform1f(u.uCut,cut?1:0);gl.uniform1f(u.uYaw,yaw);gl.drawArrays(gl.TRIANGLES,0,6)}
+let yaw=.93, resultYaw=.93;
+function render3D(){let p=LEVELS[S.idx];renderGL(goal3D,$('goalGL'),p,0,yaw,S.cut);if(['spin2','result','win'].includes(S.phase)){renderGL(result3D,$('resultView'),{...S.tryParams,major:p.major},0,resultYaw,S.cut)}}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+function getParams(){let {a,b}=S,dx=b.x-a.x,dy=b.y-a.y,t=clamp(-(a.x*dx+a.y*dy)/Math.max(.0000001,dx*dx+dy*dy),0,1),mx=a.x+dx*t,my=a.y+dy*t;return{inner:Math.sqrt(mx*mx+my*my),outer:Math.max(Math.hypot(a.x,a.y),Math.hypot(b.x,b.y))}}
+function draw(){let canvas=S.editCanvas,ctx=S.ctx,rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height;if(!w||!h)return;let d=Math.min(devicePixelRatio||1,2);if(canvas.width!==Math.round(w*d)||canvas.height!==Math.round(h*d)){canvas.width=Math.round(w*d);canvas.height=Math.round(h*d)}ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);
+ S.w=w;S.h=h;S.unit=Math.min(w/9.3,h/9.3);S.cx=w*.5;S.cy=h*.36;let sc=S.unit,cx=S.cx,cy=S.cy;
+ const pos=(p)=>({x:cx+p.x*sc,y:cy+p.y*sc}),major=LEVELS[S.idx].major;
+ ctx.save();ctx.lineWidth=1;ctx.strokeStyle='#eff4f7';
+ for(let x=Math.ceil(-cx/sc);x<=(w-cx)/sc;x++){ctx.beginPath();ctx.moveTo(cx+x*sc,0);ctx.lineTo(cx+x*sc,h);ctx.stroke()}
+ for(let y=Math.ceil(-cy/sc);y<=(h-cy)/sc;y++){ctx.beginPath();ctx.moveTo(0,cy+y*sc);ctx.lineTo(w,cy+y*sc);ctx.stroke()}
+ // Guide rings are only very faint; no exact target radius is shown.
+ ctx.setLineDash([2,6]);ctx.strokeStyle='#eef3f6';for(let r=1;r<=3;r++){ctx.beginPath();ctx.arc(cx,cy,r*sc,0,2*Math.PI);ctx.stroke()}ctx.restore();
+ let y2=cy+major*sc;ctx.save();ctx.setLineDash([7,6]);ctx.lineWidth=2.3;ctx.strokeStyle='#e9a274';ctx.beginPath();ctx.moveTo(14,y2);ctx.lineTo(w-14,y2);ctx.stroke();ctx.restore();
+ // The first axis is shown as a dot-with-ring: a physical axis pointing out of the screen.
+ ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fillStyle='#fff5eb';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#e59b65';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fillStyle='#e59b65';ctx.fill();
+ ctx.fillStyle='#c08050';ctx.font='bold 11px system-ui';ctx.fillText('①',cx+15,cy-13);
+ ctx.fillStyle='#c08050';ctx.font='bold 11px system-ui';ctx.fillText('②',w-31,y2-12);
+ const pa=pos(S.a),pb=pos(S.b);
+ if(S.phase==='spin1'){let p=getParams(),progress=clamp((performance.now()-S.spinStart)/1050,0,1),far=S.a.x*S.a.x+S.a.y*S.a.y>S.b.x*S.b.x+S.b.y*S.b.y?S.a:S.b,startAngle=Math.atan2(far.y,far.x);
+ if(p.outer>.05){let end=startAngle+2*Math.PI*progress;ctx.beginPath();ctx.arc(cx,cy,p.outer*sc,startAngle,end,false);if(p.inner>.025)ctx.arc(cx,cy,p.inner*sc,end,startAngle,true);else ctx.lineTo(cx,cy);ctx.closePath();ctx.fillStyle='rgba(45,179,198,.25)';ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(31,163,188,.36)';ctx.stroke()}
+ let ang=2*Math.PI*progress,c=Math.cos(ang),s=Math.sin(ang),rot=p=>({x:cx+(p.x*c-p.y*s)*sc,y:cy+(p.x*s+p.y*c)*sc}),rA=rot(S.a),rB=rot(S.b);
+ ctx.beginPath();ctx.moveTo(rA.x,rA.y);ctx.lineTo(rB.x,rB.y);ctx.strokeStyle='#078fac';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();return;}
+ // Live preview of the theoretical swept 2D shape, faint when editing.
+ if(S.phase==='edit'){let pp=getParams();ctx.beginPath();ctx.arc(cx,cy,pp.outer*sc,0,Math.PI*2);if(pp.inner>.035){ctx.moveTo(cx+pp.inner*sc,cy);ctx.arc(cx,cy,pp.inner*sc,0,Math.PI*2,true)}ctx.fillStyle='rgba(19,167,187,.055)';ctx.fill('evenodd')}
+ ctx.save();ctx.lineCap='round';ctx.shadowColor='#1aa3b240';ctx.shadowBlur=13;ctx.strokeStyle='#087f9e';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke();ctx.restore();
+ for(let [idx,p] of [pa,pb].entries()){ctx.beginPath();ctx.arc(p.x,p.y,idx===0?11:11,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#13a0b6';ctx.stroke();ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fillStyle='#13a0b6';ctx.fill()}
+ if(S.drag){let p=S.drag.type==='a'?pa:S.drag.type==='b'?pb:null;if(p){ctx.beginPath();ctx.arc(p.x,p.y,22,0,Math.PI*2);ctx.strokeStyle='#55bcd05e';ctx.lineWidth=2;ctx.stroke()}}
+}
+function toGamePoint(e){let r=S.editCanvas.getBoundingClientRect();return{x:(e.clientX-r.left-S.cx)/S.unit,y:(e.clientY-r.top-S.cy)/S.unit}}
+function pixelPoint(p){return{x:S.cx+p.x*S.unit,y:S.cy+p.y*S.unit}}
+function distanceSegment(point,a,b){let dx=b.x-a.x,dy=b.y-a.y,t=clamp(((point.x-a.x)*dx+(point.y-a.y)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(point.x-(a.x+t*dx),point.y-(a.y+t*dy))}
+function snapPoint(p){let dist=Math.hypot(p.x,p.y);if(dist<.19)return{x:0,y:0};let nearest=Math.round(dist*2)/2;if(Math.abs(dist-nearest)<.11&&nearest>0){let factor=nearest/dist;p={x:p.x*factor,y:p.y*factor}}return{x:clamp(p.x,-3.3,3.3),y:clamp(p.y,-3.3,3.3)}}
+S.editCanvas.addEventListener('pointerdown',e=>{if(S.phase!=='edit')return;let r=S.editCanvas.getBoundingClientRect(),point={x:e.clientX-r.left,y:e.clientY-r.top},a=pixelPoint(S.a),b=pixelPoint(S.b),da=Math.hypot(point.x-a.x,point.y-a.y),db=Math.hypot(point.x-b.x,point.y-b.y);let type=da<29&&da<=db?'a':db<29?'b':distanceSegment(point,a,b)<20?'line':null;if(!type)return;S.drag={type,start:toGamePoint(e),a:{...S.a},b:{...S.b}};S.editCanvas.setPointerCapture(e.pointerId);S.editCanvas.classList.add('grabbing');e.preventDefault();tone('tap')});
+S.editCanvas.addEventListener('pointermove',e=>{if(!S.drag)return;let p=toGamePoint(e),q=S.drag;if(q.type==='line'){let dx=p.x-q.start.x,dy=p.y-q.start.y;let a={x:q.a.x+dx,y:q.a.y+dy},b={x:q.b.x+dx,y:q.b.y+dy};let minX=Math.min(a.x,b.x),maxX=Math.max(a.x,b.x),minY=Math.min(a.y,b.y),maxY=Math.max(a.y,b.y);let corrX=minX< -3.3?-3.3-minX:maxX>3.3?3.3-maxX:0,corrY=minY< -3.3?-3.3-minY:maxY>3.3?3.3-maxY:0;S.a={x:a.x+corrX,y:a.y+corrY};S.b={x:b.x+corrX,y:b.y+corrY}}
+ else S[q.type]=snapPoint(p);draw();e.preventDefault()});
+for(let ev of ['pointerup','pointercancel','lostpointercapture'])S.editCanvas.addEventListener(ev,()=>{S.drag=null;S.editCanvas.classList.remove('grabbing');draw()});
+// Drag either 3D view horizontally to inspect the goal/result.
+function installOrbit(el,isGoal){let initial=null;el.addEventListener('pointerdown',e=>{initial=e.clientX;el.setPointerCapture(e.pointerId)});el.addEventListener('pointermove',e=>{if(initial==null)return;let dx=e.clientX-initial;initial=e.clientX;if(isGoal)yaw+=dx*.009;else resultYaw+=dx*.009;render3D()});for(let ev of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(ev,()=>initial=null)}
+installOrbit($('goalGL'),true);installOrbit($('resultView'),false);
+function setBubble(label,win){let b=$('resultBubble');b.textContent=label;b.className='resultBubble show'+(win?' win':'')}
+function renderProgress(){let el=$('progress');el.innerHTML='';LEVELS.forEach((_,i)=>{let v=document.createElement('i');if(i<=S.idx)v.classList.add('on');el.append(v)});$('levelLabel').textContent='LEVEL '+String(S.idx+1).padStart(2,'0')+' / '+LEVELS.length;$('levelCounter').textContent=String(S.idx+1).padStart(2,'0')+' / '+LEVELS.length}
+function display(){const isEdit=S.phase==='edit',anim=S.phase==='spin1'||S.phase==='spin2',win=S.phase==='win';$('work').classList.toggle('showResult',S.phase==='spin2'||S.phase==='result'||win);
+ $('mainBtn').disabled=anim;$('btnIcon').textContent=win?'✓':isEdit?'↻':anim?'◌':'↶';$('btnText').textContent=win?'次のステージへ':isEdit?'回してみる':anim?'回転中…':'線を直す';$('backBtn').hidden=isEdit||anim||win;
+ $('phaseName').textContent=isEdit?'01 — LINE':S.phase==='spin1'?'02 — SURFACE':'03 — SOLID';$('workName').textContent=isEdit?'線を置こう':S.phase==='spin1'?'線から面が生まれる':'回転してできた立体';$('workFooter').textContent='● 両端を動かす　／　線をつかんで移動';
+ $('cutBtn').hidden=LEVELS[S.idx].inner<.01;$('cutBtn').textContent=S.cut?'断面表示 ON':'断面表示 OFF';$('replay').style.display=S.phase==='result'||win?'block':'none';renderProgress();draw();render3D()}
+function startLevel(n){S.idx=(n+LEVELS.length)%LEVELS.length;S.phase='edit';S.win=false;S.cut=true;let p=LEVELS[S.idx];S.a={x:Math.min(2.1,p.outer*.65+.4),y:-1.3};S.b={x:Math.min(2.9,p.outer*.9+.7),y:-.65};$('resultBubble').className='resultBubble';S.tryParams=null;display()}
+function launch(){if(S.phase!=='edit')return;S.tryParams=getParams();let p=LEVELS[S.idx],err=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner));S.win=err<.165;S.phase='spin1';S.spinStart=performance.now();$('resultBubble').className='resultBubble';tone('open');display();let loop=()=>{if(S.phase!=='spin1')return;draw();if(performance.now()-S.spinStart<1050){S.raf=requestAnimationFrame(loop)}else{S.phase='spin2';display();setTimeout(()=>{if(S.phase!=='spin2')return;S.phase=S.win?'win':'result';setBubble(S.win?'ぴったり！ 立体が完成 ✨':'おしい！ 形を見比べよう',S.win);if(S.win){tone('win');burst();if(S.idx>=unlocked){unlocked=Math.min(LEVELS.length-1,S.idx+1);try{localStorage.setItem('dimension-unlocked',String(unlocked))}catch(e){}}}else tone('fail');display()},670)}};S.raf=requestAnimationFrame(loop)}
+function burst(){let host=$('work');for(let i=0;i<25;i++){let el=document.createElement('div');el.className='spark';el.style.left='50%';el.style.top='45%';el.style.background=i%3===0?'#f2c17a':i%3===1?'#35b9cb':'#77ddd2';let a=i*2.4,s=40+Math.random()*130;el.style.setProperty('--dx',Math.cos(a)*s+'px');el.style.setProperty('--dy',Math.sin(a)*s+'px');host.append(el);setTimeout(()=>el.remove(),900)}}
+function revert(){S.phase='edit';S.win=false;$('resultBubble').className='resultBubble';display()}
+$('mainBtn').onclick=()=>{if(S.phase==='edit')launch();else if(S.phase==='win')startLevel(S.idx+1);else if(S.phase==='result')revert()};$('backBtn').onclick=revert;
+$('helpBtn').onclick=()=>{$('help').classList.add('open');tone('open')};$('helpClose').onclick=()=>$('help').classList.remove('open');$('soundBtn').onclick=()=>{S.muted=!S.muted;$('soundBtn').textContent=S.muted?'♩':'♫'};
+$('cutBtn').onclick=()=>{S.cut=!S.cut;display()};$('replay').onclick=()=>{if(!S.tryParams)return;S.phase='spin1';S.spinStart=performance.now();S.win=false; // Replay without affecting correctness: recalculated below
+ const p=LEVELS[S.idx];S.win=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner))<.165;
+ $('resultBubble').className='resultBubble';display();let loop=()=>{if(S.phase!=='spin1')return;draw();if(performance.now()-S.spinStart<1050)requestAnimationFrame(loop);else{S.phase='spin2';display();setTimeout(()=>{if(S.phase!=='spin2')return;S.phase=S.win?'win':'result';setBubble(S.win?'ぴったり！ 立体が完成 ✨':'おしい！ 形を見比べよう',S.win);display()},670)}};requestAnimationFrame(loop)};
+// Tap progress indicators to preview any lesson; avoids locking test content.
+$('progress').addEventListener('click',e=>{let el=e.target.closest('i');if(!el)return;let n=Array.from($('progress').children).indexOf(el);if(n<0)return;tone('tap');startLevel(n)});$('progress').style.cursor='pointer';
+window.addEventListener('resize',()=>{draw();render3D()});document.addEventListener('visibilitychange',()=>{if(!document.hidden){draw();render3D()}});
+startLevel(0);setTimeout(()=>{draw();render3D()},130);
+})();
+</script>
+</body>
+</html>
