@@ -15,13 +15,13 @@
 .work{flex:1;position:relative;min-height:245px;border:1px solid #e3ebf1;background:white;border-radius:25px;overflow:hidden;box-shadow:var(--shadow)}.work:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 38%,#f9fcfd,transparent 70%)}
 .workCaption{pointer-events:none;position:absolute;z-index:3;top:15px;left:17px;color:#8c9eab;font-size:11px;letter-spacing:.06em;font-weight:700}.workCaption strong{font-size:14px;color:var(--ink);display:block;letter-spacing:0;margin-top:4px}
 #editor{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}#editor.grabbing{cursor:grabbing}
-#resultView{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .6s ease;z-index:1}.work.showResult #resultView{opacity:1}.work.showResult #editor{opacity:0}.work.showResult #resultView{pointer-events:auto}.workCaption{transition:opacity .2s}.work.showResult .workCaption{opacity:0}
-.workFooter{position:absolute;bottom:13px;left:0;right:0;text-align:center;pointer-events:none;color:#96a8b3;font-size:11px;z-index:4;transition:opacity .2s}.work.showResult .workFooter{opacity:0}
+#resultView,#motionView{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:1}#motionView{z-index:2}.work.showResult #resultView{opacity:1;pointer-events:auto}.work.showResult #editor,.work.showMotion #editor{opacity:0;pointer-events:none}.work.showMotion #motionView{opacity:1}.workCaption{transition:opacity .2s}.work.showResult .workCaption{opacity:0}.work.showMotion .workCaption{opacity:1}.work.showMotion .workCaption strong{color:#245767}
+.workFooter{position:absolute;bottom:13px;left:0;right:0;text-align:center;pointer-events:none;color:#96a8b3;font-size:11px;z-index:4;transition:opacity .2s}.work.showResult .workFooter,.work.showMotion .workFooter{opacity:0}
 .status{min-height:33px;padding:0 4px;display:flex;align-items:center;justify-content:space-between;gap:12px}.status .left{display:flex;align-items:center;gap:6px;color:#6e8490;font-size:11px}.chipDot{width:8px;height:8px;border-radius:50%;background:var(--gold)}.chipLine{width:14px;height:3px;background:var(--teal);border-radius:9px;display:inline-block}.status .right{color:#90a1ac;font-size:11px;white-space:nowrap}
 .bottom{display:flex;gap:10px}.primary{flex:1;height:60px;border:0;border-radius:18px;background:linear-gradient(125deg,#1aaabd,#0b92ad);box-shadow:0 9px 22px #118eab30;color:white;font-weight:800;font-size:16px;letter-spacing:.08em;display:flex;align-items:center;justify-content:center;gap:11px;transition:transform .12s,filter .15s}.primary:active{transform:scale(.975)}.primary:disabled{opacity:.75}.secondary{height:60px;min-width:60px;border:1px solid var(--stroke);background:white;color:#3d7382;border-radius:18px;font-size:22px}.secondary[hidden]{display:none}
 .resultBubble{position:absolute;z-index:4;left:50%;top:18px;transform:translateX(-50%) translateY(-12px);border-radius:100px;padding:10px 17px;white-space:nowrap;background:#ffffffec;box-shadow:0 5px 25px #071d2c16;font-size:13px;font-weight:800;color:var(--ink);opacity:0;transition:.32s;pointer-events:none}.resultBubble.show{opacity:1;transform:translateX(-50%) translateY(0)}.resultBubble.win{background:#e6faf5;color:#198e83}
 .replay{position:absolute;right:15px;bottom:15px;z-index:5;border:1px solid #b4e3eb;background:#f6feff;color:#428b9d;border-radius:100px;font-weight:750;font-size:11px;padding:9px 12px;display:none}.work.showResult .replay{display:block}
-.hint{position:absolute;inset:0;z-index:10;background:#0f2635ed;display:none;color:white;padding:27px 29px;align-items:center;justify-content:center;flex-direction:column;gap:13px;text-align:center}.hint.open{display:flex}.hint .huge{font-size:36px}.hint h2{font-size:18px;margin:0}.hint p{font-size:13px;line-height:1.95;color:#c8e0e9;margin:0}.hint button{background:#2ab4c5;color:#fff;border:0;padding:12px 30px;border-radius:50px;font-weight:800;margin-top:7px}
+.axisExplainer{position:absolute;z-index:5;left:14px;right:14px;bottom:15px;pointer-events:none;display:none;justify-content:center}.work.playing .axisExplainer{display:flex}.axisExplainer span{border-radius:100px;background:#f2f9fbe8;border:1px solid #cae6ed;padding:9px 13px;color:#326777;font-size:12px;line-height:1.4;text-align:center;font-weight:800;box-shadow:0 6px 16px #174f6111}.hint{position:absolute;inset:0;z-index:10;background:#0f2635ed;display:none;color:white;padding:27px 29px;align-items:center;justify-content:center;flex-direction:column;gap:13px;text-align:center}.hint.open{display:flex}.hint .huge{font-size:36px}.hint h2{font-size:18px;margin:0}.hint p{font-size:13px;line-height:1.95;color:#c8e0e9;margin:0}.hint button{background:#2ab4c5;color:#fff;border:0;padding:12px 30px;border-radius:50px;font-weight:800;margin-top:7px}
 .spark{position:absolute;z-index:8;pointer-events:none;width:7px;height:7px;border-radius:3px;background:#50ccda;animation:burst .8s ease-out forwards}@keyframes burst{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(150deg) scale(.5)}}
 @media (max-height:740px){.app{gap:8px;padding-top:calc(env(safe-area-inset-top) + 8px);padding-bottom:calc(env(safe-area-inset-bottom) + 7px)}.goal{height:clamp(135px,23dvh,185px)}.work{min-height:218px}.status{min-height:23px}.primary,.secondary{height:52px}}@media (min-height:900px){.work{min-height:350px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
@@ -32,8 +32,8 @@
 <header class="top"><div class="brand"><strong>DIMENSION</strong><small>ONE LINE. TWO TURNS. THREE DIMENSIONS.</small></div><div class="topBtns"><button class="iconBtn" id="soundBtn" aria-label="音を切り替える">♫</button><button class="iconBtn" id="helpBtn" aria-label="遊び方">?</button></div></header>
 <div class="progress" id="progress"></div>
 <section class="goal"><canvas id="goalGL" aria-label="目標の立体"></canvas><div class="goalLabel">YOUR MISSION<strong>この立体をつくろう</strong></div><div class="goalBottom"><span id="levelLabel">LEVEL 01 / 10</span><button class="cutBtn" id="cutBtn" hidden>断面表示 ON</button></div></section>
-<section class="work" id="work"><div class="workCaption"><span id="phaseName">01 — LINE</span><strong id="workName">線を置こう</strong></div><canvas id="editor" aria-label="線の位置を変える操作エリア"></canvas><canvas id="resultView" aria-label="回転でできた立体"></canvas><div class="resultBubble" id="resultBubble"></div><div class="workFooter" id="workFooter">● 両端を動かす　／　線をつかんで移動</div><button class="replay" id="replay">↻ もう一度見る</button><div class="hint" id="help"><div class="huge">━ &nbsp;◯ &nbsp;◉</div><h2>1本の線から、立体を。</h2><p>線の両端を指で動かそう。<br>① 点のまわりに回すと「面」に。<br>② 線のまわりに回すと「立体」に。<br>上の立体と同じ形になったらクリア。</p><button id="helpClose">やってみる</button></div></section>
-<div class="status"><div class="left"><span class="chipDot"></span><span>① 点のまわり</span><span style="margin:0 4px;color:#b8c6ce">→</span><span class="chipLine"></span><span>② 線のまわり</span></div><div class="right" id="levelCounter">01 / 10</div></div>
+<section class="work" id="work"><div class="workCaption"><span id="phaseName">01 — LINE</span><strong id="workName">線を置こう</strong></div><canvas id="editor" aria-label="線の位置を変える操作エリア"></canvas><canvas id="motionView" aria-label="円盤が横の軸のまわりを立体的に回る途中"></canvas><canvas id="resultView" aria-label="回転でできた立体"></canvas><div class="resultBubble" id="resultBubble"></div><div class="workFooter" id="workFooter">● 両端を動かす　／　線をつかんで移動</div><div class="axisExplainer" id="axisExplainer"><span id="axisText">① 点を中心に、線を回転</span></div><button class="replay" id="replay">↻ もう一度見る</button><div class="hint" id="help"><div class="huge">━ &nbsp;◯ &nbsp;◉</div><h2>1本の線から、立体を。</h2><p>線の両端を指で動かそう。<br>① 水色の点（画面の奥に向く軸）で線を回すと「円盤」に。<br>② オレンジの横線を軸に面を回すと「立体」に。<br>上の立体と同じ形になったらクリア。</p><button id="helpClose">やってみる</button></div></section>
+<div class="status"><div class="left"><span class="chipDot" style="background:#16a5b7"></span><span>① 水色の点で回す</span><span style="margin:0 2px;color:#b8c6ce">→</span><span class="chipLine" style="background:#e89b64"></span><span>② オレンジの線で回す</span></div><div class="right" id="levelCounter">01 / 10</div></div>
 <div class="bottom"><button class="secondary" id="backBtn" aria-label="線を編集し直す" hidden>↶</button><button class="primary" id="mainBtn"><span id="btnIcon">↻</span><span id="btnText">回してみる</span></button></div>
 </div>
 <script>
@@ -54,7 +54,7 @@ const LEVELS=[
  {kind:'torus',name:'大きな輪',major:3,outer:2,inner:0,tip:'すこし複雑な輪'},
  {kind:'tube',name:'マスター',major:3.5,outer:2,inner:1,tip:'最後の立体に挑戦'}
 ];
-const S={idx:0,phase:'edit',a:{x:1.3,y:-1.4},b:{x:2.3,y:-.9},drag:null,w:0,h:0,unit:30,cx:0,cy:0,tryParams:null,win:false,cut:true,muted:false,readyTime:0,spinStart:0,editCanvas:$('editor'),ctx:$('editor').getContext('2d'),raf:0};
+const S={idx:0,phase:'edit',a:{x:1.3,y:-1.4},b:{x:2.3,y:-.9},drag:null,w:0,h:0,unit:30,cx:0,cy:0,tryParams:null,win:false,cut:true,muted:false,readyTime:0,spinStart:0,editCanvas:$('editor'),ctx:$('editor').getContext('2d'),motionCanvas:$('motionView'),motionCtx:$('motionView').getContext('2d'),raf:0,seq:0};
 let unlocked=0;try{unlocked=+(localStorage.getItem('dimension-unlocked')||0)}catch(e){}
 let audio=null;
 function tone(type='tap'){
@@ -69,7 +69,7 @@ function tone(type='tap'){
 const shaderV='attribute vec2 aPos;varying vec2 vUv;void main(){vUv=aPos*.5+.5;gl_Position=vec4(aPos,0.,1.);}';
 const shaderF=`precision highp float;
 varying vec2 vUv;uniform vec2 uRes;uniform float uMajor,uOuter,uInner,uTime,uCut,uYaw;
-float scene(vec3 p){float rad=length(vec2(length(p.xz)-uMajor,p.y));float d=max(rad-uOuter,uInner-rad);if(uInner<.01)d=rad-uOuter;
+float scene(vec3 p){float rad=length(vec2(length(p.yz)-uMajor,p.x));float d=max(rad-uOuter,uInner-rad);if(uInner<.01)d=rad-uOuter;
 if(uCut>.5&&uInner>.01)d=max(d,min(p.x-.015,p.z-.015));return d;}
 vec3 normalAt(vec3 p){float e=.009;vec2 h=vec2(e,0.);return normalize(vec3(scene(p+h.xyy)-scene(p-h.xyy),scene(p+h.yxy)-scene(p-h.yxy),scene(p+h.yyx)-scene(p-h.yyx)));}
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
@@ -115,7 +115,7 @@ function software3D(canvas,p,yaw,cut){
  let low=document.createElement('canvas');low.width=w;low.height=h;let lc=low.getContext('2d');let image=lc.createImageData(w,h),pixels=image.data;
  let norm=(a)=>{let q=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/q,a[1]/q,a[2]/q]};let dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];let cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
  let sz=Math.max(1,p.major+p.outer),eye=[2.2*sz*Math.cos(yaw),1.38*sz,2.2*sz*Math.sin(yaw)],forward=norm(eye.map(z=>-z)),right=norm(cross(forward,[0,1,0])),up=cross(right,forward),light=norm([-.55,.86,1.05]);
- let scene=(x,y,z)=>{let rad=Math.hypot(Math.hypot(x,z)-p.major,y);let d=rad-p.outer;if(p.inner>.01)d=Math.max(d,p.inner-rad);if(cut&&p.inner>.01)d=Math.max(d,Math.min(x-.015,z-.015));return d};
+ let scene=(x,y,z)=>{let rad=Math.hypot(Math.hypot(y,z)-p.major,x);let d=rad-p.outer;if(p.inner>.01)d=Math.max(d,p.inner-rad);if(cut&&p.inner>.01)d=Math.max(d,Math.min(x-.015,z-.015));return d};
  let outer=sz*1.04,ro2=dot(eye,eye),minSize=Math.min(w,h),ci=0;
  for(let py=0;py<h;py++){
   for(let px=0;px<w;px++){
@@ -164,13 +164,13 @@ function draw(){let canvas=S.editCanvas,ctx=S.ctx,rect=canvas.getBoundingClientR
  for(let y=Math.ceil(-cy/sc);y<=(h-cy)/sc;y++){ctx.beginPath();ctx.moveTo(0,cy+y*sc);ctx.lineTo(w,cy+y*sc);ctx.stroke()}
  // Guide rings are only very faint; no exact target radius is shown.
  ctx.setLineDash([2,6]);ctx.strokeStyle='#eef3f6';for(let r=1;r<=3;r++){ctx.beginPath();ctx.arc(cx,cy,r*sc,0,2*Math.PI);ctx.stroke()}ctx.restore();
- let y2=cy+major*sc;ctx.save();ctx.setLineDash([7,6]);ctx.lineWidth=2.3;ctx.strokeStyle='#e9a274';ctx.beginPath();ctx.moveTo(14,y2);ctx.lineTo(w-14,y2);ctx.stroke();ctx.restore();
+ let y2=cy+major*sc;ctx.save();ctx.setLineDash([7,6]);ctx.lineWidth=2.3;ctx.strokeStyle='#e79a61';ctx.beginPath();ctx.moveTo(10,y2);ctx.lineTo(w-10,y2);ctx.stroke();ctx.restore();
  // The first axis is shown as a dot-with-ring: a physical axis pointing out of the screen.
- ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fillStyle='#fff5eb';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#e59b65';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fillStyle='#e59b65';ctx.fill();
- ctx.fillStyle='#c08050';ctx.font='bold 11px system-ui';ctx.fillText('①',cx+15,cy-13);
- ctx.fillStyle='#c08050';ctx.font='bold 11px system-ui';ctx.fillText('②',w-31,y2-12);
+ ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fillStyle='#e8fafb';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#15a5bb';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fillStyle='#15a5bb';ctx.fill();
+ ctx.fillStyle='#0a8da4';ctx.font='bold 11px system-ui';ctx.fillText('①',cx+15,cy-13);
+ ctx.fillStyle='#c08050';ctx.font='bold 11px system-ui';ctx.fillText('② 回転軸',w-92,y2-12);
  const pa=pos(S.a),pb=pos(S.b);
- if(S.phase==='spin1'){let p=getParams(),progress=clamp((performance.now()-S.spinStart)/1050,0,1),far=S.a.x*S.a.x+S.a.y*S.a.y>S.b.x*S.b.x+S.b.y*S.b.y?S.a:S.b,startAngle=Math.atan2(far.y,far.x);
+ if(S.phase==='spin1'||S.phase==='surface'){let p=getParams(),progress=S.phase==='surface'?1:clamp((performance.now()-S.spinStart)/1420,0,1),far=S.a.x*S.a.x+S.a.y*S.a.y>S.b.x*S.b.x+S.b.y*S.b.y?S.a:S.b,startAngle=Math.atan2(far.y,far.x);
  if(p.outer>.05){let end=startAngle+2*Math.PI*progress;ctx.beginPath();ctx.arc(cx,cy,p.outer*sc,startAngle,end,false);if(p.inner>.025)ctx.arc(cx,cy,p.inner*sc,end,startAngle,true);else ctx.lineTo(cx,cy);ctx.closePath();ctx.fillStyle='rgba(45,179,198,.25)';ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(31,163,188,.36)';ctx.stroke()}
  let ang=2*Math.PI*progress,c=Math.cos(ang),s=Math.sin(ang),rot=p=>({x:cx+(p.x*c-p.y*s)*sc,y:cy+(p.x*s+p.y*c)*sc}),rA=rot(S.a),rB=rot(S.b);
  ctx.beginPath();ctx.moveTo(rA.x,rA.y);ctx.lineTo(rB.x,rB.y);ctx.strokeStyle='#078fac';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();return;}
@@ -179,6 +179,55 @@ function draw(){let canvas=S.editCanvas,ctx=S.ctx,rect=canvas.getBoundingClientR
  ctx.save();ctx.lineCap='round';ctx.shadowColor='#1aa3b240';ctx.shadowBlur=13;ctx.strokeStyle='#087f9e';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke();ctx.restore();
  for(let [idx,p] of [pa,pb].entries()){ctx.beginPath();ctx.arc(p.x,p.y,idx===0?11:11,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#13a0b6';ctx.stroke();ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fillStyle='#13a0b6';ctx.fill()}
  if(S.drag){let p=S.drag.type==='a'?pa:S.drag.type==='b'?pb:null;if(p){ctx.beginPath();ctx.arc(p.x,p.y,22,0,Math.PI*2);ctx.strokeStyle='#55bcd05e';ctx.lineWidth=2;ctx.stroke()}}
+}
+// Rotate a *real annular 2-D region* around the SECOND, horizontal orange axis.
+// The editor coordinates are (x,y,0); axis 2 is {(x,major,0)}.
+// Every point moves to (x, major+(y-major)*cos(t), (y-major)*sin(t)).
+// No interpolation or substitute rotation: this is precisely the transform
+// used to define the final implicit solid of revolution.
+function renderMotion(frac){
+ const c=S.motionCanvas,ctx=S.motionCtx,bb=c.getBoundingClientRect(),w=bb.width,h=bb.height;if(!w||!h)return;
+ const d=Math.min(devicePixelRatio||1,2),cw=Math.round(w*d),ch=Math.round(h*d);
+ if(c.width!==cw||c.height!==ch){c.width=cw;c.height=ch}
+ ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);
+ ctx.fillStyle='#fdfefe';ctx.fillRect(0,0,w,h);
+ let p=S.tryParams||getParams(),major=LEVELS[S.idx].major,R=Math.max(.12,p.outer),r=p.inner;
+ const scale=Math.min(w/(2.9*(major+R+0.65)),h/(2.25*(major+R+0.65)))*1.35;
+ const centX=w*.50,axisY=h*.55;
+ // A fixed, gently angled view lets the viewer see a flat disk turn into a 3D volume.
+ const project=(x,y,z)=>({x:centX+(x*.95+z*.24)*scale,y:axisY+((y-major)*.79-z*.47)*scale});
+ const onDisk=(rho,phi,t)=>{let x=rho*Math.cos(phi),y=rho*Math.sin(phi);return project(x,major+(y-major)*Math.cos(t),(y-major)*Math.sin(t))};
+ function connectPts(pts,color,width=1,dash=[]){ctx.beginPath();pts.forEach((pt,i)=>i?ctx.lineTo(pt.x,pt.y):ctx.moveTo(pt.x,pt.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([])}
+ function ringPath(t){ctx.beginPath();for(let i=0;i<=64;i++){let q=onDisk(R,i/64*Math.PI*2,t);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)}ctx.closePath();if(r>.015){for(let i=0;i<=64;i++){let q=onDisk(r,(64-i)/64*Math.PI*2,t);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)}ctx.closePath()}}
+ // Faint real swept trajectories show what is generated by rotating, not merely a final shape.
+ const theta=frac*2*Math.PI, samples=Math.max(1,Math.ceil(frac*62));
+ for(let j=0;j<=12;j++){
+  let phi=j*Math.PI/6,pts=[];
+  for(let k=0;k<=samples;k++)pts.push(onDisk(R,phi,k/samples*theta));
+  connectPts(pts,'rgba(21,163,187,.17)',1.05);
+  if(r>.05){let inside=[];for(let k=0;k<=samples;k++)inside.push(onDisk(r,phi,k/samples*theta));connectPts(inside,'rgba(21,163,187,.12)',.85)}
+ }
+ // Reference horizontal rod. Drawn independently of the disk so it never spins.
+ const ax1=project(-major-R-.7,major,0),ax2=project(major+R+.7,major,0);
+ connectPts([ax1,ax2],'rgba(232,152,94,.22)',10);
+ connectPts([ax1,ax2],'#e89b64',2.5,[8,5]);
+ // Semi-transparent successive snapshots of the actual turning disk.
+ for(let j=5;j>=1;j--){let t=Math.max(0,theta-j*.15);ringPath(t);ctx.fillStyle=`rgba(52,182,204,${.022+(6-j)*.008})`;ctx.fill('evenodd');}
+ ringPath(theta);ctx.fillStyle='rgba(61,188,208,.38)';ctx.fill('evenodd');ctx.strokeStyle='#078eaa';ctx.lineWidth=2.4;ctx.stroke();
+ // Two diagnostic spokes: they tilt with the disk and prove rotation is about axis ②.
+ for(let phi of [Math.PI/2,3*Math.PI/2]){let v0=onDisk(0,0,theta),v1=onDisk(R,phi,theta);connectPts([v0,v1],'rgba(8,129,157,.48)',1.8)}
+ // A tracked boundary point and its orbit make the second rotation visible in every frame.
+ let marker=onDisk(R,Math.PI/2,theta);
+ ctx.beginPath();ctx.arc(marker.x,marker.y,5.6,0,2*Math.PI);ctx.fillStyle='#087f9e';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='white';ctx.stroke();
+ // Axis label / circular motion arrow to the right of the generated shape.
+ let axMark=project(0,major,0);ctx.fillStyle='#ba7348';ctx.font='800 12px system-ui';ctx.fillText('②',Math.min(w-27,ax2.x-22),axisY-12);
+ // A ring arrow in the projected yz-plane around the fixed rod.
+ let ar=[];for(let k=0;k<=24;k++){let a=-.55+k/24*1.95*Math.PI,rr=major>0?Math.min(major+R,2):Math.max(R*.92,.8);ar.push(project(0,major+rr*Math.cos(a),rr*Math.sin(a)))}
+ connectPts(ar,'rgba(233,151,90,.58)',2,[4,5]);
+ let tip=ar[ar.length-1],prior=ar[ar.length-3],vx=tip.x-prior.x,vy=tip.y-prior.y,len=Math.hypot(vx,vy)||1;vx/=len;vy/=len;
+ ctx.beginPath();ctx.moveTo(tip.x,tip.y);ctx.lineTo(tip.x-10*vx+4*vy,tip.y-10*vy-4*vx);ctx.lineTo(tip.x-10*vx-4*vy,tip.y-10*vy+4*vx);ctx.closePath();ctx.fillStyle='#d7945c';ctx.fill();
+ // Step progress: a discreet lower-edge line, separate from the geometry.
+ ctx.fillStyle='#eaf0f4';ctx.fillRect(27,h-21,w-54,3);ctx.fillStyle='#16a5b7';ctx.fillRect(27,h-21,(w-54)*frac,3);
 }
 function toGamePoint(e){let r=S.editCanvas.getBoundingClientRect();return{x:(e.clientX-r.left-S.cx)/S.unit,y:(e.clientY-r.top-S.cy)/S.unit}}
 function pixelPoint(p){return{x:S.cx+p.x*S.unit,y:S.cy+p.y*S.unit}}
@@ -193,22 +242,51 @@ function installOrbit(el,isGoal){let initial=null;el.addEventListener('pointerdo
 installOrbit($('goalGL'),true);installOrbit($('resultView'),false);
 function setBubble(label,win){let b=$('resultBubble');b.textContent=label;b.className='resultBubble show'+(win?' win':'')}
 function renderProgress(){let el=$('progress');el.innerHTML='';LEVELS.forEach((_,i)=>{let v=document.createElement('i');if(i<=S.idx)v.classList.add('on');el.append(v)});$('levelLabel').textContent='LEVEL '+String(S.idx+1).padStart(2,'0')+' / '+LEVELS.length;$('levelCounter').textContent=String(S.idx+1).padStart(2,'0')+' / '+LEVELS.length}
-function display(){const isEdit=S.phase==='edit',anim=S.phase==='spin1'||S.phase==='spin2',win=S.phase==='win';$('work').classList.toggle('showResult',S.phase==='spin2'||S.phase==='result'||win);
- $('mainBtn').disabled=anim;$('btnIcon').textContent=win?'✓':isEdit?'↻':anim?'◌':'↶';$('btnText').textContent=win?'次のステージへ':isEdit?'回してみる':anim?'回転中…':'線を直す';$('backBtn').hidden=isEdit||anim||win;
- $('phaseName').textContent=isEdit?'01 — LINE':S.phase==='spin1'?'02 — SURFACE':'03 — SOLID';$('workName').textContent=isEdit?'線を置こう':S.phase==='spin1'?'線から面が生まれる':'回転してできた立体';$('workFooter').textContent='● 両端を動かす　／　線をつかんで移動';
- $('cutBtn').hidden=LEVELS[S.idx].inner<.01;$('cutBtn').textContent=S.cut?'断面表示 ON':'断面表示 OFF';$('replay').style.display=S.phase==='result'||win?'block':'none';renderProgress();draw();render3D()}
-function startLevel(n){S.idx=(n+LEVELS.length)%LEVELS.length;S.phase='edit';S.win=false;S.cut=true;let p=LEVELS[S.idx];S.a={x:Math.min(2.1,p.outer*.65+.4),y:-1.3};S.b={x:Math.min(2.9,p.outer*.9+.7),y:-.65};$('resultBubble').className='resultBubble';S.tryParams=null;display()}
-function launch(){if(S.phase!=='edit')return;S.tryParams=getParams();let p=LEVELS[S.idx],err=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner));S.win=err<.165;S.phase='spin1';S.spinStart=performance.now();$('resultBubble').className='resultBubble';tone('open');display();let loop=()=>{if(S.phase!=='spin1')return;draw();if(performance.now()-S.spinStart<1050){S.raf=requestAnimationFrame(loop)}else{S.phase='spin2';display();setTimeout(()=>{if(S.phase!=='spin2')return;S.phase=S.win?'win':'result';setBubble(S.win?'ぴったり！ 立体が完成 ✨':'おしい！ 形を見比べよう',S.win);if(S.win){tone('win');burst();if(S.idx>=unlocked){unlocked=Math.min(LEVELS.length-1,S.idx+1);try{localStorage.setItem('dimension-unlocked',String(unlocked))}catch(e){}}}else tone('fail');display()},670)}};S.raf=requestAnimationFrame(loop)}
+function display(){
+ const isEdit=S.phase==='edit',anim=['spin1','surface','spin2'].includes(S.phase),win=S.phase==='win',sweep=S.phase==='spin2';
+ $('work').classList.toggle('showResult',S.phase==='result'||win);
+ $('work').classList.toggle('showMotion',sweep);
+ $('work').classList.toggle('playing',anim);
+ $('mainBtn').disabled=anim;$('btnIcon').textContent=win?'✓':isEdit?'↻':anim?'◌':'↶';$('btnText').textContent=win?'次のステージへ':isEdit?'回してみる':anim?'回転中…':'↶ 線を直す';$('backBtn').hidden=isEdit||anim||win;
+ $('phaseName').textContent=isEdit?'01 — LINE':S.phase==='spin1'||S.phase==='surface'?'02 — 1D → 2D':'03 — 2D → 3D';
+ $('workName').textContent=isEdit?'線を置こう':S.phase==='spin1'||S.phase==='surface'?'① 点のまわりを回転':'② オレンジの線で回転';
+ $('axisText').textContent=S.phase==='spin1'?'① 水色の点を中心に、線がぐるっと回る':S.phase==='surface'?'面ができた！ 次はオレンジの線で回そう':'② オレンジの線を固定して、面が回転';
+ $('workFooter').textContent='● 両端を動かす　／　線をつかんで移動';
+ $('cutBtn').hidden=LEVELS[S.idx].inner<.01&&!((S.phase==='result'||win)&&S.tryParams?.inner>.01);$('cutBtn').textContent=S.cut?'断面を閉じる':'断面を見る';$('replay').style.display=S.phase==='result'||win?'block':'none';
+ renderProgress();draw();render3D();if(sweep)renderMotion(clamp((performance.now()-S.spinStart)/2550,0,1));
+}
+function startLevel(n){++S.seq;S.idx=(n+LEVELS.length)%LEVELS.length;S.phase='edit';S.win=false;S.cut=LEVELS[S.idx].inner>.01;let p=LEVELS[S.idx];S.a={x:Math.min(2.1,p.outer*.65+.4),y:-1.3};S.b={x:Math.min(2.9,p.outer*.9+.7),y:-.65};$('resultBubble').className='resultBubble';S.tryParams=null;display()}
+function animateRotation(replay=false){
+ let token=++S.seq;
+ S.phase='spin1';S.spinStart=performance.now();$('resultBubble').className='resultBubble';tone('open');display();
+ const loop1=()=>{
+  if(S.seq!==token||S.phase!=='spin1')return;
+  draw();if(performance.now()-S.spinStart<1420)requestAnimationFrame(loop1);
+  else{S.phase='surface';display();setTimeout(()=>{
+   if(S.seq!==token||S.phase!=='surface')return;
+   S.phase='spin2';S.spinStart=performance.now();tone('open');display();requestAnimationFrame(loop2);
+  },670)}
+ };
+ const loop2=()=>{
+  if(S.seq!==token||S.phase!=='spin2')return;
+  const elapsed=performance.now()-S.spinStart,frac=clamp(elapsed/2550,0,1);
+  renderMotion(frac);
+  if(frac<1)requestAnimationFrame(loop2);
+  else{S.phase=S.win?'win':'result';setBubble(S.win?'ぴったり！ 立体が完成 ✨':'おしい！ 形を見比べよう',S.win);
+   if(S.win){if(!replay){tone('win');burst()}if(S.idx>=unlocked){unlocked=Math.min(LEVELS.length-1,S.idx+1);try{localStorage.setItem('dimension-unlocked',String(unlocked))}catch(e){}}}
+   else if(!replay)tone('fail');display();}
+ };
+ requestAnimationFrame(loop1)
+}
+function launch(){if(S.phase!=='edit')return;S.tryParams=getParams();let p=LEVELS[S.idx],err=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner));S.win=err<.165;animateRotation()}
 function burst(){let host=$('work');for(let i=0;i<25;i++){let el=document.createElement('div');el.className='spark';el.style.left='50%';el.style.top='45%';el.style.background=i%3===0?'#f2c17a':i%3===1?'#35b9cb':'#77ddd2';let a=i*2.4,s=40+Math.random()*130;el.style.setProperty('--dx',Math.cos(a)*s+'px');el.style.setProperty('--dy',Math.sin(a)*s+'px');host.append(el);setTimeout(()=>el.remove(),900)}}
-function revert(){S.phase='edit';S.win=false;$('resultBubble').className='resultBubble';display()}
+function revert(){++S.seq;S.phase='edit';S.win=false;$('resultBubble').className='resultBubble';display()}
 $('mainBtn').onclick=()=>{if(S.phase==='edit')launch();else if(S.phase==='win')startLevel(S.idx+1);else if(S.phase==='result')revert()};$('backBtn').onclick=revert;
 $('helpBtn').onclick=()=>{$('help').classList.add('open');tone('open')};$('helpClose').onclick=()=>$('help').classList.remove('open');$('soundBtn').onclick=()=>{S.muted=!S.muted;$('soundBtn').textContent=S.muted?'♩':'♫'};
-$('cutBtn').onclick=()=>{S.cut=!S.cut;display()};$('replay').onclick=()=>{if(!S.tryParams)return;S.phase='spin1';S.spinStart=performance.now();S.win=false; // Replay without affecting correctness: recalculated below
- const p=LEVELS[S.idx];S.win=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner))<.165;
- $('resultBubble').className='resultBubble';display();let loop=()=>{if(S.phase!=='spin1')return;draw();if(performance.now()-S.spinStart<1050)requestAnimationFrame(loop);else{S.phase='spin2';display();setTimeout(()=>{if(S.phase!=='spin2')return;S.phase=S.win?'win':'result';setBubble(S.win?'ぴったり！ 立体が完成 ✨':'おしい！ 形を見比べよう',S.win);display()},670)}};requestAnimationFrame(loop)};
+$('cutBtn').onclick=()=>{S.cut=!S.cut;display()};$('replay').onclick=()=>{if(!S.tryParams)return;const p=LEVELS[S.idx];S.win=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner))<.165;animateRotation(true)};
 // Tap progress indicators to preview any lesson; avoids locking test content.
 $('progress').addEventListener('click',e=>{let el=e.target.closest('i');if(!el)return;let n=Array.from($('progress').children).indexOf(el);if(n<0)return;tone('tap');startLevel(n)});$('progress').style.cursor='pointer';
-window.addEventListener('resize',()=>{draw();render3D()});document.addEventListener('visibilitychange',()=>{if(!document.hidden){draw();render3D()}});
+window.addEventListener('resize',()=>{draw();render3D();if(S.phase==='spin2')renderMotion(clamp((performance.now()-S.spinStart)/2550,0,1))});document.addEventListener('visibilitychange',()=>{if(!document.hidden){draw();render3D()}});
 startLevel(0);setTimeout(()=>{draw();render3D()},130);
 })();
 </script>
