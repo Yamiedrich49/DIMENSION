@@ -1,182 +1,150 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#f5f6f3">
-<title>DIMENSION — 線から、立体へ。</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#eef4f4">
+<title>DIMENSION / ORBIT — 回転でつかまえる</title>
 <style>
-:root{--paper:#f5f6f3;--white:#ffffff;--ink:#213e47;--muted:#81939b;--teal:#0f9cb0;--tealLight:#d8f4f5;--orange:#e8a56a;--line:#e6eaeb;--shadow:0 10px 34px rgba(29,59,64,.047)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;min-height:100%;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,system-ui,sans-serif}
-button{cursor:pointer;font:inherit;touch-action:manipulation}button:focus-visible{outline:2px solid #19acc5;outline-offset:3px}
-.app{margin:auto;width:min(100%,500px);min-height:100dvh;padding:calc(env(safe-area-inset-top) + 13px) 17px calc(env(safe-area-inset-bottom) + 14px);display:flex;flex-direction:column;gap:12px}
-header{display:flex;align-items:center;justify-content:space-between;min-height:46px}
-.brand{display:flex;flex-direction:column;gap:3px}.brand b{font-size:20px;letter-spacing:.175em;font-weight:830;line-height:1}.brand span{font-size:9px;letter-spacing:.17em;color:#91a0a7;font-weight:650}.tools{display:flex;gap:7px}.icon{width:37px;height:37px;border:1px solid #e2e8e8;border-radius:13px;background:#fff;font-size:16px;color:#6e838a;display:grid;place-items:center;box-shadow:0 2px 9px #14384808}.icon.is-off{opacity:.38}
-.progress{display:flex;gap:5px;height:3px}.progress i{flex:1;border-radius:30px;background:#dfe6e5;transition:background .25s}.progress i.on{background:#16a6b6}.progress i.active{background:#0c8196}
-.goal{height:clamp(150px,22dvh,191px);flex:none;border-radius:24px;background:radial-gradient(ellipse at 67% 55%,#1a5260 0%,#103440 45%,#09242f 100%);position:relative;overflow:hidden;box-shadow:0 9px 25px #12394810}
-.goal:after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid #ffffff0c;border-radius:inherit}
-.goal canvas{position:absolute;inset:0;display:block;width:100%;height:100%}.goalLabel{position:absolute;z-index:2;left:19px;top:18px;pointer-events:none;color:#a5c2c9;font-size:10px;font-weight:750;letter-spacing:.19em}.goalLabel b{display:block;color:#fff;font-size:16px;letter-spacing:.02em;margin-top:8px;font-weight:760}.goalFooter{position:absolute;z-index:2;bottom:16px;left:19px;right:17px;pointer-events:none;display:flex;align-items:center;justify-content:space-between;color:#9bb5bd;font-size:10px;letter-spacing:.09em}.pill{border:1px solid #ffffff24;border-radius:99px;padding:5px 10px;color:#c7e0e5;background:#ffffff0e}
-.work{position:relative;flex:1;min-height:320px;border-radius:25px;background:#fff;overflow:hidden;border:1px solid #e8eceb;box-shadow:var(--shadow)}
-.work:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 1px #ffffffb8}
-#stage{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;cursor:grab}#stage.dragging{cursor:grabbing}
-.stageHead{position:absolute;z-index:2;pointer-events:none;top:18px;left:18px;right:18px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.headTitle small{display:block;font-size:10px;color:#9ba9ad;font-weight:750;letter-spacing:.19em}.headTitle strong{font-size:16px;color:#213e47;font-weight:760;display:block;margin-top:5px}.phaseTags{display:flex;gap:5px;padding-top:3px}.phaseTags span{border:1px solid #e6eeed;background:#fafbfa;border-radius:100px;color:#abb8ba;font-size:10px;padding:5px 8px;font-weight:700;white-space:nowrap}.phaseTags span.on{color:#147f92;background:#e4f7f8;border-color:#cceef0}.phaseTags span.second.on{color:#b47c46;background:#fff0e2;border-color:#f4ddc9}
-.workFooter{position:absolute;pointer-events:none;left:15px;right:15px;bottom:17px;text-align:center;font-size:11px;letter-spacing:.03em;color:#90a5a9;font-weight:650;transition:opacity .3s}.workFooter.hidden{opacity:0}
-.resultTag{position:absolute;left:50%;top:17%;transform:translate(-50%,-10px);border-radius:99px;background:#fffefa;color:#33636b;padding:11px 18px;font-size:13px;white-space:nowrap;font-weight:800;letter-spacing:.04em;box-shadow:0 6px 20px #31576018;opacity:0;pointer-events:none;z-index:4;transition:opacity .3s,transform .3s}.resultTag.show{opacity:1;transform:translate(-50%,0)}.resultTag.win{background:#e4f8ef;color:#1e937b}
-.replay{position:absolute;bottom:17px;right:16px;z-index:4;display:none;border:1px solid #d7e9e9;border-radius:30px;padding:10px 12px;background:#fff;color:#43828b;font-size:11px;font-weight:750;box-shadow:0 5px 14px #3157600c}.replay.show{display:block}
-.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:1px 3px;color:#8c9ea2;font-size:11px;letter-spacing:.04em}.legend{display:flex;align-items:center;gap:8px;white-space:nowrap}.dot{width:7px;height:7px;border-radius:50%;background:#1aa9c0}.dash{width:15px;height:2px;border-radius:5px;background:#e7a16b}.count{white-space:nowrap;font-variant-numeric:tabular-nums}
-.controls{display:flex;gap:9px}.primary{height:60px;flex:1;border:0;border-radius:18px;background:linear-gradient(110deg,#14b0bd,#0b91a8);color:#fff;font-size:16px;font-weight:780;letter-spacing:.08em;box-shadow:0 10px 21px #0b97aa26;transition:transform .12s,opacity .2s}.primary:active{transform:scale(.985)}.primary:disabled{opacity:.65}.secondary{height:60px;width:58px;border:1px solid #e3eceb;border-radius:18px;background:#fff;color:#50818a;font-size:21px}.secondary[hidden]{display:none}
-.modal{position:absolute;inset:0;z-index:10;background:#0d2b35f0;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:15px;padding:28px}.modal.open{display:flex}.modal .glyph{font-size:33px;letter-spacing:.25em;color:#8cdae0}.modal h2{margin:0;font-size:19px}.modal p{margin:0;font-size:13px;line-height:2;color:#d6e5e7}.modal button{margin-top:8px;border:0;border-radius:99px;background:#13acbe;color:#fff;font-size:14px;font-weight:700;padding:12px 30px}
-.confetti{position:absolute;width:6px;height:6px;border-radius:2px;pointer-events:none;z-index:8;background:#2cbbbf;animation:pop .85s ease-out both}@keyframes pop{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--dx),var(--dy)) rotate(150deg) scale(.35);opacity:0}}
-@media(max-height:740px){.app{gap:8px;padding-top:calc(env(safe-area-inset-top) + 9px);padding-bottom:calc(env(safe-area-inset-bottom) + 9px)}.goal{height:clamp(136px,21dvh,170px)}.work{min-height:259px}.primary,.secondary{height:53px}.bar{font-size:10px}}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+:root{--bg:#eef4f4;--paper:#fff;--ink:#163841;--muted:#738b92;--soft:#e5f0f0;--line:#e0e9e9;--teal:#079c9c;--deep:#087e88;--aqua:#69d7cd;--coral:#e78e83;--mint:#def4ef;--shadow:0 18px 44px rgba(25,67,71,.075)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;font-family:'DM Sans','Noto Sans JP',-apple-system,system-ui,sans-serif;background:radial-gradient(circle at 80% -3%,#e0f3ee 0,transparent 42%),var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer;touch-action:manipulation}button:focus-visible{outline:3px solid #64bdc1;outline-offset:3px}
+.app{width:min(100%,480px);margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 15px) 17px calc(env(safe-area-inset-bottom) + 18px);gap:13px}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:44px}.brand{display:flex;flex-direction:column;gap:1px}.brand span{font-size:17px;font-weight:800;letter-spacing:.17em;line-height:1.2}.brand small{font-size:9px;letter-spacing:.31em;color:#679197;font-weight:700}.iconbtn{border:1px solid #d9e7e6;background:#fff9;border-radius:50%;width:42px;height:42px;display:grid;place-items:center;color:#4e767a;font-size:18px;box-shadow:0 3px 12px #356a6312}
+.heading{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;padding:5px 2px 0}.chapter{font-size:10px;letter-spacing:.15em;font-weight:800;color:var(--deep)}h1{font-size:clamp(19px,5vw,24px);font-weight:800;letter-spacing:-.045em;line-height:1.47;margin:7px 0 4px}.subtitle{font-size:11px;color:var(--muted);line-height:1.6}.sidecount{font-size:40px;font-weight:700;letter-spacing:-.08em;white-space:nowrap;line-height:1.1;color:#b7d0cc}.sidecount small{font-size:12px;letter-spacing:0;color:#9eadaa}
+.progress{display:flex;gap:5px;margin:1px 2px 0}.progress i{height:3px;flex:1;background:#d2e2e1;border-radius:3px;transition:background .3s}.progress i.done{background:#32b9ac}.progress i.current{background:#1b5860}
+.panel{border:1px solid #e5eeee;background:var(--paper);border-radius:25px;box-shadow:var(--shadow);overflow:hidden;position:relative;flex:none}.paneltop{padding:15px 17px 4px;display:flex;align-items:center;justify-content:space-between;gap:6px}.legend{display:flex;align-items:center;gap:13px;font-size:11px;color:#657d7e;font-weight:700}.legend label{display:flex;gap:6px;align-items:center}.dot{width:11px;height:11px;border-radius:50%;background:#33b9a3;border:2px solid #effefa}.diamond{height:10px;width:10px;transform:rotate(45deg);border-radius:2px;background:var(--coral)}.stagepill{font-size:9px;letter-spacing:.16em;color:#9baead;font-weight:800}
+.boardwrap{position:relative;touch-action:none;margin:0 7px 2px}canvas#board{width:100%;aspect-ratio:1;display:block;touch-action:none;cursor:grab}canvas#board:active{cursor:grabbing}.boardhint{position:absolute;bottom:12px;left:0;right:0;text-align:center;pointer-events:none;font-size:10px;letter-spacing:.02em;color:#84969a;transition:opacity .2s}.boardhint .grip{display:inline-block;width:10px;height:10px;border:2px solid #1cb1ab;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.result{position:absolute;left:15px;right:15px;bottom:16px;padding:13px 14px;border:1px solid #d4e9e6;border-radius:17px;background:#fffffff0;box-shadow:0 8px 26px #37676823;display:none;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(8px)}.result.show{display:flex}.result strong{display:block;font-size:15px}.result small{display:block;font-size:11px;color:#6d868c;margin-top:4px;line-height:1.45}.next{background:#147f84;border:0;color:white;border-radius:12px;padding:11px 14px;font-size:12px;white-space:nowrap;font-weight:700;box-shadow:0 7px 18px #147f8427}.result.fail{border-color:#f0dedb}
+.ctrl{display:flex;align-items:center;justify-content:space-between;padding:9px 16px 13px;background:linear-gradient(#fff,#fbfdfc);border-top:1px solid #f0f4f3}.ctrlLabel{font-size:10px;color:#8aa1a1;font-weight:600;margin-bottom:5px}.rangeValue{font-size:14px;font-weight:800;letter-spacing:.04em;color:#214d53}.adjust{display:flex;align-items:center;gap:7px}.step{background:#f2f7f6;border:1px solid #dae8e7;border-radius:12px;width:42px;height:39px;font-size:23px;font-weight:400;line-height:1;color:#3c7176}.step:disabled{opacity:.35}.spinsize{font-size:10px;color:#93a6a4;margin-right:4px}
+.action{background:linear-gradient(135deg,#0a7781,#0d9b9f);color:white;border:0;border-radius:19px;width:100%;min-height:65px;font-size:16px;font-weight:800;letter-spacing:.05em;display:flex;justify-content:center;align-items:center;gap:12px;box-shadow:0 11px 23px #0b8a9238;transition:transform .15s,opacity .2s}.action:active{transform:scale(.985)}.action:disabled{opacity:.55}.swirl{width:28px;height:28px;border:2px solid #ffffffa6;border-radius:50%;position:relative}.swirl::after{content:'↗';font-size:18px;position:absolute;top:-9px;right:-8px;transform:rotate(17deg);color:white}
+.footer{display:flex;justify-content:space-between;align-items:center;padding:1px 2px;gap:10px}.footer span{font-size:10px;color:#789496}.footer button{background:transparent;border:0;color:#5b8587;font-size:11px;text-decoration:underline;text-underline-offset:3px}.help{position:fixed;inset:0;background:#163b4299;display:none;place-items:center;z-index:20;padding:22px}.help.open{display:grid}.help-inner{background:#fff;border-radius:25px;padding:24px;max-width:390px;box-shadow:0 25px 65px #0003}.help-inner h2{font-size:20px;margin:0 0 12px}.help-inner p{font-size:13px;line-height:2;color:#546e74;margin:7px 0}.help-inner button{margin-top:15px;width:100%;padding:13px;border:0;border-radius:13px;color:#fff;background:#117f86;font-weight:800}
+@media(max-height:710px){.app{gap:7px;padding-top:calc(env(safe-area-inset-top) + 8px)}.paneltop{padding-top:10px}.heading{padding-top:0}.action{min-height:52px}.ctrl{padding:5px 15px 7px}.boardwrap{max-width:385px;margin:0 auto;width:100%}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="app">
-<header><div class="brand"><b>DIMENSION</b><span>ONE LINE. TWO TURNS. THREE DIMENSIONS.</span></div><div class="tools"><button class="icon" id="sound" aria-label="音の切り替え">♫</button><button class="icon" id="helpBtn" aria-label="遊び方">?</button></div></header>
+<main class="app">
+<header class="top"><div class="brand"><span>DIMENSION</span><small>ORBIT EXPERIMENT</small></div><div><button class="iconbtn" id="sound" aria-label="音の切り替え" title="音の切り替え">♫</button></div></header>
+<section class="heading"><div><div class="chapter" id="chapter">CHAPTER 01 / FIRST ORBIT</div><h1 id="title">緑だけ、つかまえよう。</h1><div class="subtitle" id="sub">棒をひとまわし。通り道は、輪っかになる。</div></div><div class="sidecount" id="stageNo">01<small> / 12</small></div></section>
 <div class="progress" id="progress"></div>
-<section class="goal"><canvas id="goal" aria-label="目標立体"></canvas><div class="goalLabel">YOUR MISSION<b>この立体をつくろう</b></div><div class="goalFooter"><span id="goalCount">LEVEL 01 / 10</span><span id="shapeType" class="pill">SOLID</span></div></section>
-<section class="work" id="work"><canvas id="stage" aria-label="線を動かし、回転して立体にする"></canvas><div class="stageHead"><div class="headTitle"><small id="phaseSmall">01 / LINE</small><strong id="phaseTitle">線を置こう</strong></div><div class="phaseTags"><span id="tag1" class="on">① 線 → 面</span><span id="tag2" class="second">② 面 → 立体</span></div></div><div class="workFooter" id="workFooter">線の端を動かして、形を予想しよう</div><div class="resultTag" id="resultTag"></div><button class="replay" id="replay">↻ もう一度見る</button><div class="modal" id="help"><div class="glyph">━　◯　◉</div><h2>線から、立体へ。</h2><p>線の端を指で動かそう。<br>① 水色の軸のまわりで、線が面に。<br>② オレンジの軸のまわりで、面が立体に。<br>画面は切り替わらず、同じ線が変化していくよ。</p><button id="helpClose">遊んでみる</button></div></section>
-<div class="bar"><div class="legend"><span class="dot"></span> ① 水色の軸　<span style="color:#a9b5b5">·</span> <span class="dash"></span> ② オレンジの軸</div><span class="count" id="count">01 / 10</span></div>
-<div class="controls"><button class="secondary" id="back" hidden aria-label="線に戻す">↶</button><button class="primary" id="main">↻ &nbsp;回してみる</button></div>
-</div>
+<section class="panel">
+ <div class="paneltop"><div class="legend"><label><i class="dot"></i>つかまえる</label><label><i class="diamond"></i>さける</label></div><span class="stagepill">LINE → ORBIT</span></div>
+ <div class="boardwrap"><canvas id="board" aria-label="回転パズルの盤面。輪の中心を選んで棒をドラッグ"></canvas><div class="boardhint" id="boardhint"><span class="grip"></span>棒をドラッグして動かそう</div>
+ <div class="result" id="result" role="status" aria-live="polite"><div><strong id="resultTitle"></strong><small id="resultSub"></small></div><button class="next" id="next">つぎへ →</button></div></div>
+ <div class="ctrl"><div><div class="ctrlLabel">棒の位置 <span id="axisText"></span></div><div class="rangeValue" id="rangeValue">1 — 2</div></div><div class="adjust"><span class="spinsize" id="widthText">棒の長さ 固定</span><button class="step" id="minus" aria-label="棒を中心に近づける">−</button><button class="step" id="plus" aria-label="棒を中心から遠ざける">＋</button></div></div>
+</section>
+<button id="spin" class="action"><span class="swirl"></span><span id="spinLabel">ひとまわし！</span></button>
+<footer class="footer"><span>回転軸をタップして切り替え</span><button id="helpBtn">あそびかた <span aria-hidden="true">↗</span></button></footer>
+</main>
+<div class="help" id="help"><div class="help-inner"><h2>遊びかた</h2><p>① 輪の中心になる<strong>白い軸</strong>を選びます。</p><p>② <strong>水色の棒をドラッグ</strong>して位置を決めます。棒の長さは変わりません。</p><p>③ <strong>ひとまわし！</strong>を押すと、棒が360°回転。棒が通ったところにいる緑の玉を全部つかまえて、赤い玉を避ければクリア。</p><p>輪の真ん中には穴があります。穴を使うのがコツ。</p><button id="helpClose">わかった！</button></div></div>
 <script>
 (()=>{'use strict';
-const $=id=>document.getElementById(id), clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-const LEVELS=[
- {name:'はじめての球',kind:'sphere',major:0,outer:1.5,inner:0},
- {name:'大きな球',kind:'sphere',major:0,outer:2.5,inner:0},
- {name:'リング',kind:'torus',major:3,outer:1,inner:0},
- {name:'ふっくらリング',kind:'torus',major:3,outer:1.5,inner:0},
- {name:'空洞の球',kind:'shell',major:0,outer:2.5,inner:1},
- {name:'細いリング',kind:'torus',major:3.5,outer:.75,inner:0},
- {name:'薄い球殻',kind:'shell',major:0,outer:2.5,inner:1.75},
- {name:'空洞の輪',kind:'tube',major:3.5,outer:1.5,inner:.75},
- {name:'大きな輪',kind:'torus',major:3,outer:2,inner:0},
- {name:'マスター',kind:'tube',major:3.5,outer:2,inner:1}
-];
-const S={needsDraw:true,level:0,phase:'edit',a:{x:1.2,y:-1},b:{x:2.2,y:-.3},drag:null,try:null,win:false,muted:false,started:0,token:0,camEase:0,lastPhase:'',p3d:0};
-const stage=$('stage'),ctx=stage.getContext('2d'),goal=$('goal'),gctx=goal.getContext('2d');
-try{S.muted=localStorage.getItem('dimension-muted')==='yes'}catch(e){}
-$('sound').classList.toggle('is-off',S.muted);
-let audio;
-function note(freq,when,duration,volume){if(S.muted)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const t=audio.currentTime+when,osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';osc.frequency.setValueAtTime(freq,t);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(volume,t+.012);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);osc.connect(gain);gain.connect(audio.destination);osc.start(t);osc.stop(t+duration+.025);}catch(e){}}
-function sound(type){if(type==='tap')note(392,0,.09,.014);else if(type==='turn')note(440,0,.24,.028);else if(type==='win')[[523.25,0],[659.25,.13],[783.99,.26],[1046.5,.40]].forEach(([f,t])=>note(f,t,.64,.032));else if(type==='try')note(329.63,0,.13,.017);}
-function resizeCanvas(c,cc,lim=2){let r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,lim),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h}cc.setTransform(d,0,0,d,0,0);return{w:r.width,h:r.height}}
-function params(){let a=S.a,b=S.b,dx=b.x-a.x,dy=b.y-a.y,t=clamp(-(a.x*dx+a.y*dy)/Math.max(1e-9,dx*dx+dy*dy),0,1),px=a.x+dx*t,py=a.y+dy*t;return{inner:Math.hypot(px,py),outer:Math.max(Math.hypot(a.x,a.y),Math.hypot(b.x,b.y)),major:LEVELS[S.level].major}}
-const ease=t=>t*t*(3-2*t);
-function camera(w,h,outputMix){let L=LEVELS[S.level],r=Math.max(L.outer,params().outer),base=Math.min(w/8.5,h/(8.3+L.major*.18)),finish=Math.min(w/(2.6*(L.major+r+1)),h/(2.5*(L.major+r+1)));const scale=base+(finish-base)*ease(outputMix),cx=w*.5,cy=h*.455-L.major*.80*scale*ease(outputMix);return {scale,cx,cy};}
-function projection(x,y,z,cam){return{x:cam.cx+cam.scale*(.75*x+.661438*z),y:cam.cy+cam.scale*(.16*x+.97*y-.1814*z),depth:-.64*x+.24*y+.73*z}}
-function project(p,cam){return projection(p.x,p.y,p.z||0,cam)}
-function fromScreen(sx,sy,cam){let x=(sx-cam.cx)/(.75*cam.scale);return{x,y:((sy-cam.cy)/cam.scale-.16*x)/.97}}
-function path(points,c,fill,stroke,width=1){if(!points.length)return;c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.lineWidth=width;c.strokeStyle=stroke;c.stroke()}}
-function stroke(points,c,color,width=1,dash=[]){if(points.length<2)return;c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.strokeStyle=color;c.lineWidth=width;c.setLineDash(dash);c.stroke();c.setLineDash([])}
-function drawAxes(c,cam,L,opts={}){const strong=opts.strong||'both',o=strong==='second'?1:.6;
- // Both axes remain literally in the same three-dimensional scene during all phases.
- const aa=project({x:0,y:0,z:-2.15},cam),ab=project({x:0,y:0,z:2.15},cam);
- stroke([aa,ab],c,`rgba(35,172,188,${strong==='first'?.83:.37})`,strong==='first'?2.3:1.6,[4,6]);
- const ax=project({x:-4.0,y:L.major,z:0},cam),ay=project({x:4,y:L.major,z:0},cam);
- stroke([ax,ay],c,`rgba(230,159,100,${strong==='second'?.19:.10})`,8);
- stroke([ax,ay],c,`rgba(214,144,82,${strong==='second'?.96:.72})`,strong==='second'?2.6:2,[8,6]);
- let origin=project({x:0,y:0,z:0},cam);c.beginPath();c.arc(origin.x,origin.y,6.1,0,Math.PI*2);c.fillStyle='#f0fbfb';c.fill();c.strokeStyle='#0b9cb0';c.lineWidth=2;c.stroke();c.beginPath();c.arc(origin.x,origin.y,1.9,0,7);c.fillStyle='#0b9cb0';c.fill();
- c.font='750 11px system-ui';c.fillStyle='#148da1';c.fillText('①',ab.x+6,ab.y-8);c.fillStyle='#bd814b';c.fillText('②',ay.x-23,ay.y-10);
+const LEVELS=[{"id":1,"axes":[[0,0]],"width":1,"solution":[0,1],"points":[{"x":-4.077,"y":3.94,"good":false},{"x":1.507,"y":-3.227,"good":false},{"x":-0.613,"y":1.589,"good":true},{"x":1.369,"y":-0.261,"good":true}],"sols":1},{"id":2,"axes":[[0,0]],"width":1,"solution":[0,0],"points":[{"x":-3.358,"y":3.495,"good":false},{"x":1.658,"y":-3.272,"good":false},{"x":0.42,"y":-0.508,"good":true},{"x":-0.438,"y":0.192,"good":true}],"sols":1},{"id":3,"axes":[[0,0]],"width":1,"solution":[0,2],"points":[{"x":-2.399,"y":0.434,"good":true},{"x":4.124,"y":-4.012,"good":false},{"x":2.638,"y":-0.442,"good":true},{"x":-3.806,"y":4.0,"good":false}],"sols":1},{"id":4,"axes":[[-1.35,0.7],[1.35,-0.7]],"width":1,"solution":[1,1],"points":[{"x":1.979,"y":-2.376,"good":true},{"x":-3.87,"y":1.833,"good":false},{"x":3.005,"y":-0.111,"good":true},{"x":0.227,"y":3.609,"good":false}],"sols":1},{"id":5,"axes":[[-1.45,-0.8],[1.4,1]],"width":2,"solution":[0,1],"points":[{"x":-3.32,"y":0.433,"good":true},{"x":0.056,"y":-1.264,"good":true},{"x":3.238,"y":-3.58,"good":false},{"x":2.019,"y":3.574,"good":false}],"sols":1},{"id":6,"axes":[[-1.7,0],[1.3,0.7]],"width":1,"solution":[1,2],"points":[{"x":-4.036,"y":-0.629,"good":false},{"x":0.032,"y":-4.141,"good":false},{"x":3.538,"y":0.721,"good":true},{"x":2.072,"y":2.914,"good":true}],"sols":1},{"id":7,"axes":[[-1.5,1.15],[1.65,-0.5],[0.1,-1.45]],"width":1,"solution":[0,1],"points":[{"x":-2.45,"y":2.057,"good":true},{"x":3.715,"y":3.731,"good":false},{"x":-2.111,"y":-0.124,"good":true},{"x":-0.217,"y":-3.709,"good":false}],"sols":1},{"id":8,"axes":[[-1.65,-0.85],[1.5,-0.65],[0.15,1.5]],"width":2,"solution":[1,1],"points":[{"x":4.227,"y":-1.097,"good":true},{"x":3.759,"y":3.783,"good":false},{"x":-0.249,"y":-0.193,"good":true},{"x":-3.8,"y":-2.647,"good":false}],"sols":1},{"id":9,"axes":[[-1.2,1],[1.75,1],[0.2,-1.5]],"width":1,"solution":[2,3],"points":[{"x":-2.814,"y":-3.812,"good":true},{"x":2.828,"y":-3.976,"good":true},{"x":-2.753,"y":3.836,"good":false},{"x":3.572,"y":2.999,"good":false}],"sols":1},{"id":10,"axes":[[-1.4,-1.4],[1.2,-0.7],[0,1.2]],"width":2,"solution":[0,2],"points":[{"x":-2.61,"y":1.729,"good":true},{"x":3.325,"y":0.947,"good":false},{"x":-3.884,"y":-3.628,"good":true},{"x":3.569,"y":3.824,"good":false}],"sols":1},{"id":11,"axes":[[-1.65,1.25],[1.65,-0.85],[0.25,0.4]],"width":1,"solution":[1,2],"points":[{"x":-3.611,"y":2.723,"good":false},{"x":3.681,"y":0.719,"good":true},{"x":3.549,"y":-2.651,"good":true},{"x":-2.281,"y":-3.118,"good":false}],"sols":1},{"id":12,"axes":[[-1.25,-1.25],[1.3,1.1],[-1.5,1.6]],"width":2,"solution":[2,1],"points":[{"x":1.59,"y":0.441,"good":false},{"x":-2.716,"y":4.057,"good":true},{"x":-1.529,"y":-3.938,"good":false},{"x":-2.473,"y":3.072,"good":true}],"sols":1}];
+const $=id=>document.getElementById(id);
+const canvas=$('board'),ctx=canvas.getContext('2d',{alpha:false});
+const WORLD=10,TAU=Math.PI*2;
+let W=340,H=340,sc=34,cx=170,cy=170,raf=0,actx=null;
+const S={n:0,axis:0,start:0,phase:'edit',animation:0,drag:false,seen:false,muted:false,clear:[false,false,false,false,false,false,false,false,false,false,false,false],win:false,sweepTime:0,hit:null};
+try{S.muted=localStorage.getItem('dimension-orbit-sound')==='off';let saved=JSON.parse(localStorage.getItem('dimension-orbit-cleared')||'[]');if(Array.isArray(saved))saved.forEach((x,i)=>{if(i<12)S.clear[i]=!!x})}catch{}
+function sound(kind){if(S.muted)return;try{actx=actx||new(window.AudioContext||window.webkitAudioContext)();if(actx.state==='suspended')actx.resume();const now=actx.currentTime;
+ const tone=(freq,delay,dur=.16,vol=.022)=>{const o=actx.createOscillator(),g=actx.createGain(),f=actx.createBiquadFilter();o.type='sine';o.frequency.setValueAtTime(freq,now+delay);f.type='lowpass';f.frequency.value=2400;g.gain.setValueAtTime(.0001,now+delay);g.gain.exponentialRampToValueAtTime(vol,now+delay+.012);g.gain.exponentialRampToValueAtTime(.0001,now+delay+dur);o.connect(f);f.connect(g);g.connect(actx.destination);o.start(now+delay);o.stop(now+delay+dur+.02)};
+ if(kind==='tap')tone(523.25,0,.085,.012);
+ if(kind==='spin'){tone(392,0,.18,.013);tone(523.25,.19,.22,.009)}
+ if(kind==='win')[[523.25,0],[659.25,.105],[783.99,.21],[1046.5,.32]].forEach(([f,d])=>tone(f,d,.35,.020));
+ if(kind==='fail')tone(392,0,.14,.010);
+ }catch{}}
+function stage(){return LEVELS[S.n]}
+const maxStart=()=>4-stage().width;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+function toPX(x,y){return [cx+x*sc,cy+y*sc]}
+function world(px,py){return [(px-cx)/sc,(py-cy)/sc]}
+function resize(){const box=canvas.getBoundingClientRect(),ratio=Math.min(window.devicePixelRatio||1,2.5);W=box.width;H=box.height;canvas.width=Math.round(W*ratio);canvas.height=Math.round(H*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);cx=W/2;cy=H/2;const p=stage(),extent=Math.max(5.05,...p.axes.map(a=>Math.max(Math.abs(a[0]),Math.abs(a[1]))+4.5));sc=Math.min(W,H)/(2*extent);render()}
+function axisPt(i){return stage().axes[i]}
+function dirForAxis(){let [ax,ay]=axisPt(S.axis),best=-Infinity,dir=-Math.PI/4;for(let i=0;i<64;i++){let a=i*TAU/64;let x=ax+4*Math.cos(a),y=ay+4*Math.sin(a);let margin=Math.min(4.55-Math.abs(x),4.55-Math.abs(y));let score=margin+Math.sin(a*2)*.05;if(score>best){best=score;dir=a}}return dir}
+function makePath(c,r1,r2,a0,a1){c.beginPath();c.arc(0,0,r2,a0,a1,false);if(r1>.001){c.arc(0,0,r1,a1,a0,true)}else{c.lineTo(0,0)}c.closePath()}
+function cleanShadow(){ctx.shadowBlur=0;ctx.shadowColor='transparent';ctx.shadowOffsetY=0}
+function render(time=performance.now()){
+ ctx.clearRect(0,0,W,H);ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+ const p=stage();ctx.save();
+ // Very subtle reference points, not a heavy grid.
+ for(let i=-4;i<=4;i++){for(let j=-4;j<=4;j++){const [x,y]=toPX(i,j);ctx.fillStyle='#edf2f1';ctx.beginPath();ctx.arc(x,y,1.1,0,TAU);ctx.fill()}}
+ let [ax,ay]=axisPt(S.axis),[px,py]=toPX(ax,ay),a=dirForAxis();
+ const near=S.start,far=S.start+p.width,full=S.phase==='result'||S.phase==='win';
+ // Draw ghost radii on editing; animate sweep with the same unchanged pivot and rod.
+ ctx.save();ctx.translate(px,py);
+ if(S.phase==='edit'){
+  ctx.strokeStyle='#bcdedc';ctx.setLineDash([3,8]);ctx.lineWidth=1;for(const rr of [near,far]){if(rr<=0)continue;ctx.beginPath();ctx.arc(0,0,rr*sc,0,TAU);ctx.stroke()}ctx.setLineDash([]);
+ }
+ if(S.phase==='spin'||full){
+  const frac=full?1:Math.min(1,(time-S.sweepTime)/1460);
+  ctx.fillStyle=full?'rgba(38,184,163,.16)':'rgba(35,183,164,.15)';
+  const v=a+TAU*frac;
+  makePath(ctx,near*sc,far*sc,a,v);ctx.fill();
+  ctx.strokeStyle=full?'rgba(12,163,160,.72)':'rgba(31,171,158,.44)';ctx.lineWidth=1.4;ctx.setLineDash([]);
+  if(near>0){ctx.beginPath();ctx.arc(0,0,near*sc,a,v);ctx.stroke()}
+  ctx.beginPath();ctx.arc(0,0,far*sc,a,v);ctx.stroke();
+  if(S.phase==='spin'&&frac<1){ctx.save();ctx.rotate(v);ctx.strokeStyle='#08a7a0';ctx.lineWidth=4.6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(near*sc,0);ctx.lineTo(far*sc,0);ctx.stroke();ctx.restore()}
+ }
+ ctx.restore();
+ // Draw inactive axes; their exact coordinates are selectable.
+ p.axes.forEach(([x,y],i)=>{const [qx,qy]=toPX(x,y);ctx.save();if(S.axis===i){ctx.fillStyle='#e5f7f4';ctx.beginPath();ctx.arc(qx,qy,18,0,TAU);ctx.fill()}
+ ctx.shadowBlur=S.axis===i?9:0;ctx.shadowColor='rgba(32,147,136,.13)';ctx.fillStyle=S.axis===i?'#fff':'#f7fbfa';ctx.strokeStyle=S.axis===i?'#069d98':'#abc6c7';ctx.lineWidth=S.axis===i?2.5:1.5;ctx.beginPath();ctx.arc(qx,qy,10.5,0,TAU);ctx.fill();ctx.stroke();cleanShadow();ctx.fillStyle=S.axis===i?'#087d7e':'#8eaaab';ctx.beginPath();ctx.arc(qx,qy,3.4,0,TAU);ctx.fill();ctx.restore()});
+ // Arm stays in this coordinate system during editing.
+ if(S.phase==='edit'){
+  ctx.save();ctx.translate(px,py);ctx.rotate(a);
+  ctx.strokeStyle='#c4d7d7';ctx.setLineDash([4,6]);ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(10,0);ctx.lineTo(near*sc,0);ctx.stroke();ctx.setLineDash([]);
+  ctx.strokeStyle='#09a3a0';ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(near*sc,0);ctx.lineTo(far*sc,0);ctx.stroke();
+  for(const rr of [near,far]){ctx.shadowBlur=12;ctx.shadowColor='rgba(11,151,142,.18)';ctx.beginPath();ctx.arc(rr*sc,0,8,0,TAU);ctx.fillStyle='#fff';ctx.fill();cleanShadow();ctx.lineWidth=2.5;ctx.strokeStyle='#08a7a0';ctx.stroke();ctx.beginPath();ctx.arc(rr*sc,0,2,0,TAU);ctx.fillStyle='#08a7a0';ctx.fill()}
+  ctx.restore()
+ }
+ // Draw 2D beads above sweep, with stable sizes and visible cross/checked state.
+ p.points.forEach(pt=>{const [x,y]=toPX(pt.x,pt.y);const d=Math.hypot(pt.x-ax,pt.y-ay),inside=d>near+.001&&d<far-.001;const judged=full;ctx.save();
+  if(pt.good){ctx.shadowColor='rgba(13,161,142,.20)';ctx.shadowBlur=9;ctx.fillStyle='#25b69b';ctx.beginPath();ctx.arc(x,y,8.5,0,TAU);ctx.fill();cleanShadow();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
+   if(judged&&inside){ctx.strokeStyle='#087e79';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,13.2,0,TAU);ctx.stroke()}
+   if(judged&&!inside){ctx.strokeStyle='#d6b18d';ctx.lineWidth=1.4;ctx.setLineDash([2,3]);ctx.beginPath();ctx.arc(x,y,13.8,0,TAU);ctx.stroke()}
+  }else{ctx.translate(x,y);ctx.rotate(Math.PI/4);ctx.fillStyle='#ed9285';ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(-7.4,-7.4,14.8,14.8,3);ctx.fill();ctx.stroke();if(judged&&inside){ctx.strokeStyle='#bb5e54';ctx.lineWidth=2.1;ctx.beginPath();ctx.roundRect(-13,-13,26,26,5);ctx.stroke()}}
+  ctx.restore()});
+  ctx.restore();
+ if(S.phase==='spin'){const t=(time-S.sweepTime)/1460;if(t>=1){finish()}else{raf=requestAnimationFrame(render)}}
 }
-function drawStageBg(c,w,h,cam){c.clearRect(0,0,w,h);c.fillStyle='#fff';c.fillRect(0,0,w,h);
- let grad=c.createRadialGradient(w*.49,h*.52,25,w*.49,h*.52,Math.max(w,h)*.62);grad.addColorStop(0,'rgba(223,249,246,.17)');grad.addColorStop(1,'rgba(243,247,245,0)');c.fillStyle=grad;c.fillRect(0,0,w,h);
- c.save();c.strokeStyle='#f2f5f4';c.lineWidth=.65;const step=cam.scale;let px=cam.cx%step,py=cam.cy%step;for(let x=px;x<w;x+=step){c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke()}for(let y=py;y<h;y+=step){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}c.restore();}
-function ringCoords(R,r,cam,theta=0){let outer=[],inner=[];for(let i=0;i<=72;i++){let a=i/72*Math.PI*2;for(const [rad,arr] of [[R,outer],[r,inner]]){let x=rad*Math.cos(a),y=rad*Math.sin(a),L=LEVELS[S.level],ang=theta;arr.push(project({x,y:L.major+(y-L.major)*Math.cos(ang),z:(y-L.major)*Math.sin(ang)},cam))}}return {outer,inner}}
-function drawDisk(c,cam,p,angle,opacity=1){if(opacity<=0)return;const N=64,T=8,L=LEVELS[S.level],quads=[];
- for(let j=0;j<N;j++){let a=j/N*Math.PI*2,b=(j+1)/N*Math.PI*2;for(let k=0;k<T;k++){let ra=p.inner+(p.outer-p.inner)*k/T,rb=p.inner+(p.outer-p.inner)*(k+1)/T;let pts=[];for(let [r,t] of [[ra,a],[rb,a],[rb,b],[ra,b]]){let x=r*Math.cos(t),y=r*Math.sin(t);pts.push(project({x,y:L.major+(y-L.major)*Math.cos(angle),z:(y-L.major)*Math.sin(angle)},cam))}let dep=pts.reduce((s,v)=>s+v.depth,0)/4;quads.push({pts,dep})}}
- quads.sort((a,b)=>a.dep-b.dep);c.save();c.globalAlpha=opacity;quads.forEach(({pts})=>path(pts,c,'#91dce1'));c.restore();let {outer,inner}=ringCoords(p.outer,p.inner,cam,angle);stroke(outer,c,`rgba(9,140,163,${.82*opacity})`,Math.max(1.2,1.9*opacity));if(p.inner>.03)stroke(inner,c,`rgba(13,140,155,${.68*opacity})`,1.4);
- for(let a of [0,Math.PI/2,Math.PI,3*Math.PI/2]){let seg=[];for(const r of [p.inner,p.outer]){let x=r*Math.cos(a),y=r*Math.sin(a);seg.push(project({x,y:L.major+(y-L.major)*Math.cos(angle),z:(y-L.major)*Math.sin(angle)},cam))}stroke(seg,c,`rgba(12,123,144,${.17*opacity})`,1.2)}
- let mx=0,my=p.outer,Lm=L.major;let marker=project({x:mx,y:Lm+(my-Lm)*Math.cos(angle),z:(my-Lm)*Math.sin(angle)},cam);c.beginPath();c.arc(marker.x,marker.y,4.4,0,7);c.fillStyle='#078ca5';c.fill();c.lineWidth=1.6;c.strokeStyle='#fff';c.stroke();
-}
-// Draw the true locus of the original line; every intermediate stroke is part of the same line.
-function drawLine(c,cam,angle=0,withHandles=false){let cos=Math.cos(angle),sin=Math.sin(angle),rot=p=>project({x:p.x*cos-p.y*sin,y:p.x*sin+p.y*cos,z:0},cam),a=rot(S.a),b=rot(S.b);
- c.save();c.lineCap='round';c.shadowColor='#0ba7b548';c.shadowBlur=12;c.lineWidth=5.7;c.strokeStyle='#0a94ab';c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke();c.restore();
- if(withHandles){for(let q of [a,b]){c.beginPath();c.arc(q.x,q.y,12,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.strokeStyle='#079aad';c.lineWidth=2.6;c.stroke();c.beginPath();c.arc(q.x,q.y,3.1,0,7);c.fillStyle='#079aad';c.fill()}if(S.drag){let q=S.drag.type==='a'?a:S.drag.type==='b'?b:null;if(q){c.beginPath();c.arc(q.x,q.y,24,0,7);c.lineWidth=1.5;c.strokeStyle='#3cb9bd55';c.stroke()}}}
-}
-function drawSpin1(c,cam,f){const loops=54,n=Math.max(1,Math.ceil(loops*f));let a=S.a,b=S.b;
- for(let i=0;i<n;i++){const t1=(i/loops)*Math.PI*2,t2=(Math.min((i+1)/loops,f))*Math.PI*2;let pt=(p,t)=>project({x:p.x*Math.cos(t)-p.y*Math.sin(t),y:p.x*Math.sin(t)+p.y*Math.cos(t),z:0},cam),pts=[pt(a,t1),pt(b,t1),pt(b,t2),pt(a,t2)];path(pts,c,'rgba(55,188,197,.33)')}
- for(let k=1;k<=3;k++){let t=Math.max(0,f*2*Math.PI-k*.18),ca=Math.cos(t),sa=Math.sin(t);let pts=[a,b].map(q=>project({x:q.x*ca-q.y*sa,y:q.x*sa+q.y*ca,z:0},cam));stroke(pts,c,`rgba(13,155,181,${.1/(k*.65)})`,3)}
- drawLine(c,cam,f*2*Math.PI,false);
-}
-const light=[.65,-.86,1.2];
-function normal(x,y,z){let d=Math.hypot(x,y,z)||1;return [x/d,y/d,z/d]}
-function surfPoint(alpha,beta,R,M,inner=false){let x=R*Math.cos(alpha),y=R*Math.sin(alpha);return{x,y:M+(y-M)*Math.cos(beta),z:(y-M)*Math.sin(beta)}}
-// For each boundary circle of the actual swept disk, beta traces the second rotation.
-// At major=0, sweeping only the positive-radius semicircle avoids double rendering the sphere.
-function drawSolid(c,cam,p,frac=1,opacity=1,forGoal=false){if(frac<.001||opacity<.003)return;let R=p.outer,M=p.major, sphere=M<.001;
- const A=forGoal?48:34,B=forGoal?54:42,aMax=sphere?Math.PI:Math.PI*2,bMax=2*Math.PI*frac,polys=[];
- for(let i=0;i<A;i++){let a=i/A*aMax,bb=(i+1)/A*aMax;for(let j=0;j<B*frac;j++){let u=j/B*2*Math.PI,v=Math.min(bMax,(j+1)/B*2*Math.PI);if(v<=u)continue;
- let q=[surfPoint(a,u,R,M),surfPoint(bb,u,R,M),surfPoint(bb,v,R,M),surfPoint(a,v,R,M)];let pts=q.map(P=>project(P,cam)),dep=pts.reduce((s,x)=>s+x.depth,0)/4;
- let am=(a+bb)/2,bm=(u+v)/2;let nx=Math.cos(am),ny=(sphere?1:-1)*Math.sin(am)*Math.cos(bm),nz=(sphere?1:-1)*Math.sin(am)*Math.sin(bm);let nd=Math.max(0,(nx*light[0]+ny*light[1]+nz*light[2])/1.6),view=Math.max(0,ny*-.22+nz*.94+nx*.10),rim=Math.pow(1-view,2.2),gleam=Math.pow(Math.max(0,ny*.1+nz*.8+nx*.33),14);
- let t=Math.min(1,.44+.45*nd+.22*view+.16*gleam-.065*rim);let rgb=forGoal?[Math.round(14+43*t),Math.round(123+93*t),Math.round(138+97*t)]:[Math.round(7+37*t),Math.round(133+88*t),Math.round(156+80*t)];
- polys.push({pts,dep,color:`rgb(${rgb.join(',')})`})}}
- polys.sort((a,b)=>a.dep-b.dep);c.save();c.globalAlpha=opacity;
- for(let k of polys){path(k.pts,c,k.color,k.color,1.6)}c.restore();
- // For hollow shapes, make the missing interior legible without opaque cross-sectional cutting.
- if(p.inner>.01&&frac>=.999){const RR=p.inner,pts=[];for(let n=0;n<=80;n++){let a=n/80*Math.PI*2;pts.push(project({x:RR*Math.cos(a),y:RR*Math.sin(a),z:0},cam))}stroke(pts,c,forGoal?'rgba(196,251,250,.48)':'rgba(14,106,123,.32)',1.3,[3,5]);}
-}
-function drawSpin2(c,cam,p,f){let t=f*2*Math.PI;
- // All parts share the exact same orthographic camera. The volume appears from the path of the moving disk.
- if(f>.012)drawSolid(c,cam,p,f,1);
- for(let n=3;n>=1;n--){let t0=Math.max(0,t-n*.16);if(t0<=0)continue;let outline=ringCoords(p.outer,p.inner,cam,t0);stroke(outline.outer,c,`rgba(55,182,199,${.13/(n*.9)})`,1.3)}
- drawDisk(c,cam,p,t,.38*clamp((1-f)/.24,0,1));
- let y=p.outer,orbit=[];for(let k=0;k<=45*f;k++){let a=k/45*Math.PI*2;orbit.push(project({x:0,y:p.major+(y-p.major)*Math.cos(a),z:(y-p.major)*Math.sin(a)},cam))}
- stroke(orbit,c,'rgba(214,158,96,.35)',1.35,[3,5]);
-}
-function stageDraw(now){const active=['spin1','hold','spin2'].includes(S.phase);if(!active&&!S.needsDraw){requestAnimationFrame(stageDraw);return;}S.needsDraw=false;let {w,h}=resizeCanvas(stage,ctx);const L=LEVELS[S.level],p=S.try||params();let f=0;
- if(S.phase==='spin1'){f=clamp((now-S.started)/1600,0,1);if(f===1){S.phase='hold';S.started=now;setText();sound('turn')}}
- if(S.phase==='hold'&&now-S.started>570){S.phase='spin2';S.started=now;setText()}
- if(S.phase==='spin2'){f=clamp((now-S.started)/2700,0,1);if(f===1){S.phase=S.win?'win':'result';S.started=now;S.camEase=1;setText();if(S.win){sound('win');confetti()}else sound('try')}}
- let mix=S.phase==='spin2'?ease(clamp((now-S.started)/2050,0,1)):['result','win'].includes(S.phase)?1:0;
- let cam=camera(w,h,mix);S.cam=cam;drawStageBg(ctx,w,h,cam);
- if(S.phase==='edit'){drawAxes(ctx,cam,L,{strong:'first'});drawLine(ctx,cam,0,true)}
- else if(S.phase==='spin1'){drawAxes(ctx,cam,L,{strong:'first'});drawSpin1(ctx,cam,f)}
- else if(S.phase==='hold'){drawAxes(ctx,cam,L,{strong:'first'});drawDisk(ctx,cam,p,0,.54)}
- else if(S.phase==='spin2'){drawAxes(ctx,cam,L,{strong:'second'});drawSpin2(ctx,cam,p,f)}
- else{drawAxes(ctx,cam,L,{strong:'second'});drawSolid(ctx,cam,p,1,.99)}
- requestAnimationFrame(stageDraw);
-}
-function drawGoal(){let {w,h}=resizeCanvas(goal,gctx,1.7);gctx.clearRect(0,0,w,h);const L=LEVELS[S.level],scale=Math.min(h/(2.32*(L.major+L.outer+.25)),w/(2.6*(L.major+L.outer+.3)))*(L.major>.01?.98:1.07);
- let cam={scale,cx:w*.63,cy:h*(L.major>.01?.47:.53)-L.major*.9*scale};drawSolid(gctx,cam,L,1,.99,true);
- 
-}
-function setText(){S.needsDraw=true;let x=S.phase,edit=x==='edit',first=x==='spin1',hold=x==='hold',second=x==='spin2',win=x==='win';
- $('phaseSmall').textContent=edit?'01 / LINE':first||hold?'02 / SURFACE':second?'03 / SOLID':'COMPLETE';
- $('phaseTitle').textContent=edit?'線を置こう':first?'① 線が面になる':hold?'面ができた':second?'② 面が立体になる':win?'ぴったり！':'あと少し！';
- $('tag1').classList.toggle('on',first||hold||edit);$('tag2').classList.toggle('on',second||x==='result'||win);
- $('workFooter').classList.toggle('hidden',!edit);
- $('main').textContent=edit?'↻   回してみる':first||hold||second?'回転中…':win?'次のステージへ  →':'↶  線を直す';
- $('main').disabled=first||hold||second;$('back').hidden=edit||first||hold||second||win;
- $('replay').classList.toggle('show',x==='result'||win);
- $('resultTag').className='resultTag'+(x==='result'||win?' show':'')+(win?' win':'');$('resultTag').textContent=win?'完成！ すばらしい ✦':'惜しい！ もう一度';
-}
-function updateProgress(){let p=$('progress');p.innerHTML='';for(let i=0;i<LEVELS.length;i++){const el=document.createElement('i');if(i<=S.level)el.classList.add('on');if(i===S.level)el.classList.add('active');el.addEventListener('click',()=>startLevel(i));p.appendChild(el)}
- $('goalCount').textContent='LEVEL '+String(S.level+1).padStart(2,'0')+' / '+LEVELS.length;$('count').textContent=String(S.level+1).padStart(2,'0')+' / '+LEVELS.length;
- $('shapeType').textContent=LEVELS[S.level].inner>.01?'HOLLOW':LEVELS[S.level].major>.01?'RING':'SOLID';}
-function startLevel(n){S.token++;S.level=(n+LEVELS.length)%LEVELS.length;S.phase='edit';S.try=null;S.win=false;S.a={x:Math.min(2.4,LEVELS[S.level].outer*.6+.45),y:-1.4};S.b={x:Math.min(2.9,LEVELS[S.level].outer*.92+.5),y:-.75};$('resultTag').className='resultTag';updateProgress();drawGoal();setText()}
-function confetti(){const w=$('work');for(let i=0;i<29;i++){let e=document.createElement('span');e.className='confetti';e.style.left=(37+Math.random()*27)+'%';e.style.top=(37+Math.random()*20)+'%';e.style.background=i%4===0?'#e6b47d':i%3===0?'#abd9d8':'#20afba';e.style.setProperty('--dx',Math.round((Math.random()-.5)*250)+'px');e.style.setProperty('--dy',Math.round((Math.random()-.5)*250)+'px');w.appendChild(e);setTimeout(()=>e.remove(),870)}}
-function play(replay=false){S.try=params();let L=LEVELS[S.level];S.win=Math.abs(S.try.outer-L.outer)<=.23&&Math.abs(S.try.inner-L.inner)<=.23;S.phase='spin1';S.started=performance.now();$('resultTag').className='resultTag';sound('turn');setText()}
-const localPoint=e=>{let r=stage.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}};
-const close=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-function lineDist(p,a,b){let dx=b.x-a.x,dy=b.y-a.y,t=clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy)}
-function snap(p){let rr=Math.hypot(p.x,p.y);if(rr<.17)return{x:0,y:0};let target=Math.round(rr*2)/2;if(Math.abs(rr-target)<.09){p.x*=target/rr;p.y*=target/rr}return{x:clamp(p.x,-3.25,3.25),y:clamp(p.y,-3.25,3.25)}}
-stage.addEventListener('pointerdown',e=>{if(S.phase!=='edit')return;let screen=localPoint(e),a=project(S.a,S.cam),b=project(S.b,S.cam),da=close(screen,a),db=close(screen,b),type=da<32&&da<=db?'a':db<32?'b':lineDist(screen,a,b)<22?'line':null;if(!type)return;S.drag={type,start:fromScreen(screen.x,screen.y,S.cam),a:{...S.a},b:{...S.b}};stage.setPointerCapture(e.pointerId);stage.classList.add('dragging');sound('tap');e.preventDefault()});
-stage.addEventListener('pointermove',e=>{if(!S.drag)return;let s=localPoint(e),p=fromScreen(s.x,s.y,S.cam),d=S.drag;
- if(d.type==='line'){let dx=p.x-d.start.x,dy=p.y-d.start.y;let aa={x:d.a.x+dx,y:d.a.y+dy},bb={x:d.b.x+dx,y:d.b.y+dy};let ox=Math.min(aa.x,bb.x)<-3.25?-3.25-Math.min(aa.x,bb.x):Math.max(aa.x,bb.x)>3.25?3.25-Math.max(aa.x,bb.x):0;let oy=Math.min(aa.y,bb.y)<-3.25?-3.25-Math.min(aa.y,bb.y):Math.max(aa.y,bb.y)>3.25?3.25-Math.max(aa.y,bb.y):0;S.a={x:aa.x+ox,y:aa.y+oy};S.b={x:bb.x+ox,y:bb.y+oy}}
- else S[d.type]=snap(p);S.needsDraw=true;e.preventDefault()});
-for(let event of ['pointerup','pointercancel','lostpointercapture'])stage.addEventListener(event,()=>{S.drag=null;S.needsDraw=true;stage.classList.remove('dragging')});
-$('main').addEventListener('click',()=>{if(S.phase==='edit')play();else if(S.phase==='win')startLevel(S.level+1);else if(S.phase==='result'){S.phase='edit';S.try=null;S.win=false;setText();sound('tap')}});
-$('back').addEventListener('click',()=>{S.phase='edit';S.try=null;S.win=false;setText();sound('tap')});
-$('replay').addEventListener('click',()=>play(true));
-$('sound').addEventListener('click',()=>{S.muted=!S.muted;try{localStorage.setItem('dimension-muted',S.muted?'yes':'no')}catch(e){}$('sound').classList.toggle('is-off',S.muted);if(!S.muted)sound('tap')});
-$('helpBtn').addEventListener('click',()=>{$('help').classList.add('open');sound('tap')});$('helpClose').addEventListener('click',()=>{$('help').classList.remove('open');sound('tap')});
-window.addEventListener('resize',()=>{S.needsDraw=true;drawGoal()});
-startLevel(0);requestAnimationFrame(stageDraw);
+function calculate(){const p=stage(),[ax,ay]=axisPt(S.axis);let hit=0,bad=0,missing=0;p.points.forEach(pt=>{let d=Math.hypot(pt.x-ax,pt.y-ay),touch=d>S.start+.001&&d<S.start+p.width-.001;if(touch&&pt.good)hit++;if(touch&&!pt.good)bad++;if(!touch&&pt.good)missing++});return {hit,bad,missing,win:bad===0&&missing===0}}
+function writeProgress(){const el=$('progress');el.innerHTML='';for(let i=0;i<LEVELS.length;i++){const b=document.createElement('i');if(S.clear[i])b.className='done';if(i===S.n)b.className='current';b.title='ステージ '+(i+1);b.style.cursor='pointer';b.dataset.level=String(i);el.appendChild(b)}}
+function interfaceUpdate(){const p=stage();$('stageNo').innerHTML=String(S.n+1).padStart(2,'0')+'<small> / 12</small>';
+ $('chapter').textContent=S.n<3?'CHAPTER 01 / DISCOVERY':S.n<6?'CHAPTER 02 / TWO AXES':S.n<9?'CHAPTER 03 / CHOOSE THE CENTER':'CHAPTER 04 / MASTER ORBITS';
+ $('title').textContent=S.n===2?'真ん中を、空けよう。':S.n===3?'軸を選ぶと、輪が変わる。':S.n>=6?'どの軸で回す？':'緑だけ、つかまえよう。';
+ $('sub').textContent=S.n===0?'棒を回すと、通り道は「輪っか」になる。':S.n===2?'穴を使えば、真ん中の赤を避けられる。':S.n>=3?'白い軸をタップ。棒は同じ長さのまま。':'緑を全部、赤はひとつも触れずに。';
+ $('axisText').textContent=p.axes.length>1?'・軸 '+(S.axis+1):'';
+ $('rangeValue').textContent=S.start+' — '+(S.start+p.width);
+ $('widthText').textContent='長さ '+p.width+' 固定';
+ $('minus').disabled=S.start<=0||S.phase==='spin';$('plus').disabled=S.start>=maxStart()||S.phase==='spin';
+ $('spin').disabled=S.phase==='spin';$('spinLabel').textContent=S.phase==='spin'?'回転中…':'ひとまわし！';
+ $('boardhint').style.opacity=(S.phase==='edit'?1:0);
+ writeProgress()}
+function startLevel(i){cancelAnimationFrame(raf);S.n=clamp(i,0,LEVELS.length-1);S.axis=0;const p=stage();S.start=p.solution[1]===0?1:0;S.phase='edit';S.win=false;S.hit=null;S.drag=false;$('result').className='result';interfaceUpdate();resize()}
+function setStart(n){if(S.phase==='spin')return;S.start=clamp(Math.round(n),0,maxStart());S.phase='edit';$('result').className='result';interfaceUpdate();render()}
+function setAxis(n){if(S.phase==='spin')return;S.axis=n;S.phase='edit';$('result').className='result';interfaceUpdate();sound('tap');render()}
+function spin(){if(S.phase==='spin')return;S.phase='spin';S.sweepTime=performance.now();$('result').className='result';interfaceUpdate();sound('spin');cancelAnimationFrame(raf);raf=requestAnimationFrame(render)}
+function finish(){if(S.phase!=='spin')return;let hit=calculate();S.phase=hit.win?'win':'result';S.hit=hit;S.win=hit.win;let el=$('result');el.className='result show'+(hit.win?'':' fail');$('resultTitle').textContent=hit.win?'ぴったり！':hit.bad?`赤を ${hit.bad} 個 通ってしまった`:`緑が ${hit.missing} 個 のこっている`;
+ $('resultSub').textContent=hit.win?'棒が回って、輪になった。':hit.bad?'輪の中心や位置を変えてみよう。':'棒の位置や軸を変えてみよう。';$('next').textContent=hit.win?(S.n===LEVELS.length-1?'もう一度 ↻':'つぎへ →'):'なおす ↻';
+ if(hit.win){S.clear[S.n]=true;try{localStorage.setItem('dimension-orbit-cleared',JSON.stringify(S.clear))}catch{}sound('win')}else{sound('fail')}
+ interfaceUpdate();render()}
+function coord(e){const r=canvas.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
+function rodDragLocation(x,y){let [ax,ay]=axisPt(S.axis),a=dirForAxis(),[xx,yy]=world(x,y),dr=(xx-ax)*Math.cos(a)+(yy-ay)*Math.sin(a);return clamp(Math.round(dr-stage().width/2),0,maxStart())}
+function checkAxis(x,y){let pts=stage().axes.map((p,i)=>({i,d:Math.hypot(...toPX(...p).map((v,j)=>v-[x,y][j]))}));pts.sort((a,b)=>a.d-b.d);return pts[0].d<=14?pts[0].i:-1}
+canvas.addEventListener('pointerdown',e=>{if(S.phase==='spin')return;e.preventDefault();canvas.setPointerCapture(e.pointerId);let [x,y]=coord(e),found=checkAxis(x,y);if(found>=0){if(found!==S.axis)setAxis(found);S.drag=false;return}
+ let [ax,ay]=axisPt(S.axis),a=dirForAxis(),[xx,yy]=world(x,y),dr=(xx-ax)*Math.cos(a)+(yy-ay)*Math.sin(a),perp=Math.abs(-(xx-ax)*Math.sin(a)+(yy-ay)*Math.cos(a));
+ if(perp<.75&&dr>=S.start-.5&&dr<=S.start+stage().width+.8){S.drag=true;S.dragOffset=dr-(S.start+stage().width/2);sound('tap')}else S.drag=false
+});
+canvas.addEventListener('pointermove',e=>{if(!S.drag)return;e.preventDefault();const [x,y]=coord(e),[ax,ay]=axisPt(S.axis),ang=dirForAxis(),[xx,yy]=world(x,y);let dr=(xx-ax)*Math.cos(ang)+(yy-ay)*Math.sin(ang);let newStart=clamp(Math.round(dr-S.dragOffset-stage().width/2),0,maxStart());if(newStart!==S.start){S.start=newStart;S.phase='edit';$('result').className='result';interfaceUpdate();render()}});
+canvas.addEventListener('pointerup',e=>{S.drag=false});canvas.addEventListener('pointercancel',e=>{S.drag=false});
+$('minus').addEventListener('click',()=>{if(S.start>0){setStart(S.start-1);sound('tap')}});
+$('plus').addEventListener('click',()=>{if(S.start<maxStart()){setStart(S.start+1);sound('tap')}});
+$('spin').addEventListener('click',spin);$('progress').addEventListener('click',e=>{let d=e.target.closest('i');if(d&&S.phase!=='spin'){startLevel(Number(d.dataset.level));sound('tap')}});
+$('next').addEventListener('click',()=>{if(S.win){startLevel(S.n===LEVELS.length-1?0:S.n+1);sound('tap')}else{S.phase='edit';$('result').className='result';interfaceUpdate();render()}});
+$('sound').textContent=S.muted?'♪̸':'♫';$('sound').addEventListener('click',()=>{S.muted=!S.muted;try{localStorage.setItem('dimension-orbit-sound',S.muted?'off':'on')}catch{}$('sound').textContent=S.muted?'♪̸':'♫';if(!S.muted)sound('tap')});
+$('helpBtn').addEventListener('click',()=>{$('help').classList.add('open');sound('tap')});$('helpClose').addEventListener('click',()=>{$('help').classList.remove('open');sound('tap')});$('help').addEventListener('click',e=>{if(e.target===$('help'))$('help').classList.remove('open')});
+window.addEventListener('resize',resize);startLevel(0);
 })();
 </script>
-</body>
-</html>
+</body></html>
