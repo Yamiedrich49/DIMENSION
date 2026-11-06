@@ -1,293 +1,181 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,viewport-fit=cover,user-scalable=no"/>
-<meta name="theme-color" content="#f5f8fb"/>
-<title>DIMENSION｜回して、つくる。</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#f5f6f3">
+<title>DIMENSION — 線から、立体へ。</title>
 <style>
-:root{--ink:#152e3e;--sub:#708695;--teal:#16a5b7;--teal2:#55ccda;--gold:#ef9e61;--bg:#f5f8fb;--stroke:#e5ebf0;--shadow:0 12px 36px rgba(22,65,90,.085)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;font-family:ui-rounded,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,system-ui,sans-serif;color:var(--ink);background:var(--bg)}button{font:inherit;cursor:pointer}button:focus-visible{outline:3px solid #4bbad4;outline-offset:2px}
-.app{width:min(100%,495px);margin:0 auto;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 12px) 17px calc(env(safe-area-inset-bottom) + 12px);display:flex;flex-direction:column;gap:11px}
-.top{display:flex;align-items:center;justify-content:space-between;min-height:37px}.brand{display:flex;flex-direction:column;line-height:1}.brand strong{font-size:19px;font-weight:850;letter-spacing:.17em}.brand small{font-size:9px;letter-spacing:.19em;color:#8ba1ae;font-weight:700;margin-top:5px}.topBtns{display:flex;gap:6px}.iconBtn{background:white;color:#657e8c;width:36px;height:36px;border:1px solid var(--stroke);border-radius:13px;display:grid;place-items:center;font-size:18px;box-shadow:0 3px 9px #233b4e08}
-.progress{display:flex;gap:5px;height:4px}.progress i{flex:1;border-radius:10px;background:#e0e8ed;transition:background .35s}.progress i.on{background:#22acbf}
-.goal{height:clamp(148px,24dvh,212px);min-height:148px;position:relative;border-radius:25px;background:linear-gradient(135deg,#112e3f,#071d2c);overflow:hidden;isolation:isolate;box-shadow:var(--shadow)}.goal:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 54% 53%,#155a6e40,transparent 67%)}.goal canvas{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:pan-y}.goalLabel{position:absolute;left:18px;top:16px;z-index:2;pointer-events:none;color:#9dc0cd;font-size:10px;letter-spacing:.14em;font-weight:800}.goalLabel strong{display:block;color:white;font-size:16px;letter-spacing:.03em;margin-top:6px}.goalBottom{position:absolute;bottom:13px;left:17px;right:17px;display:flex;justify-content:space-between;align-items:center;pointer-events:none;z-index:2}.goalBottom span{font-size:10px;color:#9dbdc9}.cutBtn{pointer-events:auto;border:1px solid #6597a066;background:#174354bb;color:#d5f6ff;border-radius:99px;padding:6px 10px;font-size:10px;font-weight:700}.cutBtn[hidden]{display:none}
-.work{flex:1;position:relative;min-height:245px;border:1px solid #e3ebf1;background:white;border-radius:25px;overflow:hidden;box-shadow:var(--shadow)}.work:before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 38%,#f9fcfd,transparent 70%)}
-.workCaption{pointer-events:none;position:absolute;z-index:3;top:15px;left:17px;color:#8c9eab;font-size:11px;letter-spacing:.06em;font-weight:700}.workCaption strong{font-size:14px;color:var(--ink);display:block;letter-spacing:0;margin-top:4px}
-#editor{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}#editor.grabbing{cursor:grabbing}
-#resultView,#motionView{position:absolute;inset:0;width:100%;height:100%;opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:1}#motionView{z-index:2}.work.showResult #resultView{opacity:1;pointer-events:auto}.work.showResult #editor,.work.showMotion #editor{opacity:0;pointer-events:none}.work.showMotion #motionView{opacity:1}.workCaption{transition:opacity .2s}.work.showResult .workCaption{opacity:0}.work.showMotion .workCaption{opacity:1}.work.showMotion .workCaption strong{color:#245767}
-.workFooter{position:absolute;bottom:13px;left:0;right:0;text-align:center;pointer-events:none;color:#96a8b3;font-size:11px;z-index:4;transition:opacity .2s}.work.showResult .workFooter,.work.showMotion .workFooter{opacity:0}
-.status{min-height:33px;padding:0 4px;display:flex;align-items:center;justify-content:space-between;gap:12px}.status .left{display:flex;align-items:center;gap:6px;color:#6e8490;font-size:11px}.chipDot{width:8px;height:8px;border-radius:50%;background:var(--gold)}.chipLine{width:14px;height:3px;background:var(--teal);border-radius:9px;display:inline-block}.status .right{color:#90a1ac;font-size:11px;white-space:nowrap}
-.bottom{display:flex;gap:10px}.primary{flex:1;height:60px;border:0;border-radius:18px;background:linear-gradient(125deg,#1aaabd,#0b92ad);box-shadow:0 9px 22px #118eab30;color:white;font-weight:800;font-size:16px;letter-spacing:.08em;display:flex;align-items:center;justify-content:center;gap:11px;transition:transform .12s,filter .15s}.primary:active{transform:scale(.975)}.primary:disabled{opacity:.75}.secondary{height:60px;min-width:60px;border:1px solid var(--stroke);background:white;color:#3d7382;border-radius:18px;font-size:22px}.secondary[hidden]{display:none}
-.resultBubble{position:absolute;z-index:4;left:50%;top:18px;transform:translateX(-50%) translateY(-12px);border-radius:100px;padding:10px 17px;white-space:nowrap;background:#ffffffec;box-shadow:0 5px 25px #071d2c16;font-size:13px;font-weight:800;color:var(--ink);opacity:0;transition:.32s;pointer-events:none}.resultBubble.show{opacity:1;transform:translateX(-50%) translateY(0)}.resultBubble.win{background:#e6faf5;color:#198e83}
-.replay{position:absolute;right:15px;bottom:15px;z-index:5;border:1px solid #b4e3eb;background:#f6feff;color:#428b9d;border-radius:100px;font-weight:750;font-size:11px;padding:9px 12px;display:none}.work.showResult .replay{display:block}
-.axisExplainer{position:absolute;z-index:5;left:14px;right:14px;bottom:15px;pointer-events:none;display:none;justify-content:center}.work.playing .axisExplainer{display:flex}.axisExplainer span{border-radius:100px;background:#f2f9fbe8;border:1px solid #cae6ed;padding:9px 13px;color:#326777;font-size:12px;line-height:1.4;text-align:center;font-weight:800;box-shadow:0 6px 16px #174f6111}.hint{position:absolute;inset:0;z-index:10;background:#0f2635ed;display:none;color:white;padding:27px 29px;align-items:center;justify-content:center;flex-direction:column;gap:13px;text-align:center}.hint.open{display:flex}.hint .huge{font-size:36px}.hint h2{font-size:18px;margin:0}.hint p{font-size:13px;line-height:1.95;color:#c8e0e9;margin:0}.hint button{background:#2ab4c5;color:#fff;border:0;padding:12px 30px;border-radius:50px;font-weight:800;margin-top:7px}
-.spark{position:absolute;z-index:8;pointer-events:none;width:7px;height:7px;border-radius:3px;background:#50ccda;animation:burst .8s ease-out forwards}@keyframes burst{from{opacity:1;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(150deg) scale(.5)}}
-@media (max-height:740px){.app{gap:8px;padding-top:calc(env(safe-area-inset-top) + 8px);padding-bottom:calc(env(safe-area-inset-bottom) + 7px)}.goal{height:clamp(135px,23dvh,185px)}.work{min-height:218px}.status{min-height:23px}.primary,.secondary{height:52px}}@media (min-height:900px){.work{min-height:350px}}
+:root{--paper:#f5f6f3;--white:#ffffff;--ink:#213e47;--muted:#81939b;--teal:#0f9cb0;--tealLight:#d8f4f5;--orange:#e8a56a;--line:#e6eaeb;--shadow:0 10px 34px rgba(29,59,64,.047)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;min-height:100%;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,system-ui,sans-serif}
+button{cursor:pointer;font:inherit;touch-action:manipulation}button:focus-visible{outline:2px solid #19acc5;outline-offset:3px}
+.app{margin:auto;width:min(100%,500px);min-height:100dvh;padding:calc(env(safe-area-inset-top) + 13px) 17px calc(env(safe-area-inset-bottom) + 14px);display:flex;flex-direction:column;gap:12px}
+header{display:flex;align-items:center;justify-content:space-between;min-height:46px}
+.brand{display:flex;flex-direction:column;gap:3px}.brand b{font-size:20px;letter-spacing:.175em;font-weight:830;line-height:1}.brand span{font-size:9px;letter-spacing:.17em;color:#91a0a7;font-weight:650}.tools{display:flex;gap:7px}.icon{width:37px;height:37px;border:1px solid #e2e8e8;border-radius:13px;background:#fff;font-size:16px;color:#6e838a;display:grid;place-items:center;box-shadow:0 2px 9px #14384808}.icon.is-off{opacity:.38}
+.progress{display:flex;gap:5px;height:3px}.progress i{flex:1;border-radius:30px;background:#dfe6e5;transition:background .25s}.progress i.on{background:#16a6b6}.progress i.active{background:#0c8196}
+.goal{height:clamp(150px,22dvh,191px);flex:none;border-radius:24px;background:radial-gradient(ellipse at 67% 55%,#1a5260 0%,#103440 45%,#09242f 100%);position:relative;overflow:hidden;box-shadow:0 9px 25px #12394810}
+.goal:after{content:"";position:absolute;inset:0;pointer-events:none;border:1px solid #ffffff0c;border-radius:inherit}
+.goal canvas{position:absolute;inset:0;display:block;width:100%;height:100%}.goalLabel{position:absolute;z-index:2;left:19px;top:18px;pointer-events:none;color:#a5c2c9;font-size:10px;font-weight:750;letter-spacing:.19em}.goalLabel b{display:block;color:#fff;font-size:16px;letter-spacing:.02em;margin-top:8px;font-weight:760}.goalFooter{position:absolute;z-index:2;bottom:16px;left:19px;right:17px;pointer-events:none;display:flex;align-items:center;justify-content:space-between;color:#9bb5bd;font-size:10px;letter-spacing:.09em}.pill{border:1px solid #ffffff24;border-radius:99px;padding:5px 10px;color:#c7e0e5;background:#ffffff0e}
+.work{position:relative;flex:1;min-height:320px;border-radius:25px;background:#fff;overflow:hidden;border:1px solid #e8eceb;box-shadow:var(--shadow)}
+.work:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 1px #ffffffb8}
+#stage{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;cursor:grab}#stage.dragging{cursor:grabbing}
+.stageHead{position:absolute;z-index:2;pointer-events:none;top:18px;left:18px;right:18px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}.headTitle small{display:block;font-size:10px;color:#9ba9ad;font-weight:750;letter-spacing:.19em}.headTitle strong{font-size:16px;color:#213e47;font-weight:760;display:block;margin-top:5px}.phaseTags{display:flex;gap:5px;padding-top:3px}.phaseTags span{border:1px solid #e6eeed;background:#fafbfa;border-radius:100px;color:#abb8ba;font-size:10px;padding:5px 8px;font-weight:700;white-space:nowrap}.phaseTags span.on{color:#147f92;background:#e4f7f8;border-color:#cceef0}.phaseTags span.second.on{color:#b47c46;background:#fff0e2;border-color:#f4ddc9}
+.workFooter{position:absolute;pointer-events:none;left:15px;right:15px;bottom:17px;text-align:center;font-size:11px;letter-spacing:.03em;color:#90a5a9;font-weight:650;transition:opacity .3s}.workFooter.hidden{opacity:0}
+.resultTag{position:absolute;left:50%;top:17%;transform:translate(-50%,-10px);border-radius:99px;background:#fffefa;color:#33636b;padding:11px 18px;font-size:13px;white-space:nowrap;font-weight:800;letter-spacing:.04em;box-shadow:0 6px 20px #31576018;opacity:0;pointer-events:none;z-index:4;transition:opacity .3s,transform .3s}.resultTag.show{opacity:1;transform:translate(-50%,0)}.resultTag.win{background:#e4f8ef;color:#1e937b}
+.replay{position:absolute;bottom:17px;right:16px;z-index:4;display:none;border:1px solid #d7e9e9;border-radius:30px;padding:10px 12px;background:#fff;color:#43828b;font-size:11px;font-weight:750;box-shadow:0 5px 14px #3157600c}.replay.show{display:block}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:1px 3px;color:#8c9ea2;font-size:11px;letter-spacing:.04em}.legend{display:flex;align-items:center;gap:8px;white-space:nowrap}.dot{width:7px;height:7px;border-radius:50%;background:#1aa9c0}.dash{width:15px;height:2px;border-radius:5px;background:#e7a16b}.count{white-space:nowrap;font-variant-numeric:tabular-nums}
+.controls{display:flex;gap:9px}.primary{height:60px;flex:1;border:0;border-radius:18px;background:linear-gradient(110deg,#14b0bd,#0b91a8);color:#fff;font-size:16px;font-weight:780;letter-spacing:.08em;box-shadow:0 10px 21px #0b97aa26;transition:transform .12s,opacity .2s}.primary:active{transform:scale(.985)}.primary:disabled{opacity:.65}.secondary{height:60px;width:58px;border:1px solid #e3eceb;border-radius:18px;background:#fff;color:#50818a;font-size:21px}.secondary[hidden]{display:none}
+.modal{position:absolute;inset:0;z-index:10;background:#0d2b35f0;color:#fff;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:15px;padding:28px}.modal.open{display:flex}.modal .glyph{font-size:33px;letter-spacing:.25em;color:#8cdae0}.modal h2{margin:0;font-size:19px}.modal p{margin:0;font-size:13px;line-height:2;color:#d6e5e7}.modal button{margin-top:8px;border:0;border-radius:99px;background:#13acbe;color:#fff;font-size:14px;font-weight:700;padding:12px 30px}
+.confetti{position:absolute;width:6px;height:6px;border-radius:2px;pointer-events:none;z-index:8;background:#2cbbbf;animation:pop .85s ease-out both}@keyframes pop{from{transform:translate(0,0) scale(1);opacity:1}to{transform:translate(var(--dx),var(--dy)) rotate(150deg) scale(.35);opacity:0}}
+@media(max-height:740px){.app{gap:8px;padding-top:calc(env(safe-area-inset-top) + 9px);padding-bottom:calc(env(safe-area-inset-bottom) + 9px)}.goal{height:clamp(136px,21dvh,170px)}.work{min-height:259px}.primary,.secondary{height:53px}.bar{font-size:10px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><strong>DIMENSION</strong><small>ONE LINE. TWO TURNS. THREE DIMENSIONS.</small></div><div class="topBtns"><button class="iconBtn" id="soundBtn" aria-label="音を切り替える">♫</button><button class="iconBtn" id="helpBtn" aria-label="遊び方">?</button></div></header>
+<header><div class="brand"><b>DIMENSION</b><span>ONE LINE. TWO TURNS. THREE DIMENSIONS.</span></div><div class="tools"><button class="icon" id="sound" aria-label="音の切り替え">♫</button><button class="icon" id="helpBtn" aria-label="遊び方">?</button></div></header>
 <div class="progress" id="progress"></div>
-<section class="goal"><canvas id="goalGL" aria-label="目標の立体"></canvas><div class="goalLabel">YOUR MISSION<strong>この立体をつくろう</strong></div><div class="goalBottom"><span id="levelLabel">LEVEL 01 / 10</span><button class="cutBtn" id="cutBtn" hidden>断面表示 ON</button></div></section>
-<section class="work" id="work"><div class="workCaption"><span id="phaseName">01 — LINE</span><strong id="workName">線を置こう</strong></div><canvas id="editor" aria-label="線の位置を変える操作エリア"></canvas><canvas id="motionView" aria-label="円盤が横の軸のまわりを立体的に回る途中"></canvas><canvas id="resultView" aria-label="回転でできた立体"></canvas><div class="resultBubble" id="resultBubble"></div><div class="workFooter" id="workFooter">● 両端を動かす　／　線をつかんで移動</div><div class="axisExplainer" id="axisExplainer"><span id="axisText">① 点を中心に、線を回転</span></div><button class="replay" id="replay">↻ もう一度見る</button><div class="hint" id="help"><div class="huge">━ &nbsp;◯ &nbsp;◉</div><h2>1本の線から、立体を。</h2><p>線の両端を指で動かそう。<br>① 水色の点（画面の奥に向く軸）で線を回すと「円盤」に。<br>② オレンジの横線を軸に面を回すと「立体」に。<br>上の立体と同じ形になったらクリア。</p><button id="helpClose">やってみる</button></div></section>
-<div class="status"><div class="left"><span class="chipDot" style="background:#16a5b7"></span><span>① 水色の点で回す</span><span style="margin:0 2px;color:#b8c6ce">→</span><span class="chipLine" style="background:#e89b64"></span><span>② オレンジの線で回す</span></div><div class="right" id="levelCounter">01 / 10</div></div>
-<div class="bottom"><button class="secondary" id="backBtn" aria-label="線を編集し直す" hidden>↶</button><button class="primary" id="mainBtn"><span id="btnIcon">↻</span><span id="btnText">回してみる</span></button></div>
+<section class="goal"><canvas id="goal" aria-label="目標立体"></canvas><div class="goalLabel">YOUR MISSION<b>この立体をつくろう</b></div><div class="goalFooter"><span id="goalCount">LEVEL 01 / 10</span><span id="shapeType" class="pill">SOLID</span></div></section>
+<section class="work" id="work"><canvas id="stage" aria-label="線を動かし、回転して立体にする"></canvas><div class="stageHead"><div class="headTitle"><small id="phaseSmall">01 / LINE</small><strong id="phaseTitle">線を置こう</strong></div><div class="phaseTags"><span id="tag1" class="on">① 線 → 面</span><span id="tag2" class="second">② 面 → 立体</span></div></div><div class="workFooter" id="workFooter">線の端を動かして、形を予想しよう</div><div class="resultTag" id="resultTag"></div><button class="replay" id="replay">↻ もう一度見る</button><div class="modal" id="help"><div class="glyph">━　◯　◉</div><h2>線から、立体へ。</h2><p>線の端を指で動かそう。<br>① 水色の軸のまわりで、線が面に。<br>② オレンジの軸のまわりで、面が立体に。<br>画面は切り替わらず、同じ線が変化していくよ。</p><button id="helpClose">遊んでみる</button></div></section>
+<div class="bar"><div class="legend"><span class="dot"></span> ① 水色の軸　<span style="color:#a9b5b5">·</span> <span class="dash"></span> ② オレンジの軸</div><span class="count" id="count">01 / 10</span></div>
+<div class="controls"><button class="secondary" id="back" hidden aria-label="線に戻す">↶</button><button class="primary" id="main">↻ &nbsp;回してみる</button></div>
 </div>
 <script>
 (()=>{'use strict';
-// All geometric units are mathematical units. The first rotation creates exactly
-// the annulus swept by the segment about the point-axis perpendicular to the screen.
-// Revolving that region around the horizontal second axis produces the 3-D solid.
-const $=id=>document.getElementById(id);
+const $=id=>document.getElementById(id), clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 const LEVELS=[
- {kind:'sphere',name:'はじめての球',major:0,outer:1.5,inner:0,tip:'まずは、球をつくろう'},
- {kind:'sphere',name:'大きな球',major:0,outer:2.5,inner:0,tip:'もっと大きく'},
- {kind:'torus',name:'リング',major:3,outer:1,inner:0,tip:'真ん中に穴をつくろう'},
- {kind:'torus',name:'ふっくらリング',major:3,outer:1.5,inner:0,tip:'輪の太さが変わる'},
- {kind:'shell',name:'空洞の球',major:0,outer:2.5,inner:1,tip:'内側に空間を残そう'},
- {kind:'torus',name:'細いリング',major:3.5,outer:.75,inner:0,tip:'細く、美しく'},
- {kind:'shell',name:'薄い球殻',major:0,outer:2.5,inner:1.75,tip:'面の内側を空けよう'},
- {kind:'tube',name:'空洞の輪',major:3.5,outer:1.5,inner:.75,tip:'輪の断面にも穴を'},
- {kind:'torus',name:'大きな輪',major:3,outer:2,inner:0,tip:'すこし複雑な輪'},
- {kind:'tube',name:'マスター',major:3.5,outer:2,inner:1,tip:'最後の立体に挑戦'}
+ {name:'はじめての球',kind:'sphere',major:0,outer:1.5,inner:0},
+ {name:'大きな球',kind:'sphere',major:0,outer:2.5,inner:0},
+ {name:'リング',kind:'torus',major:3,outer:1,inner:0},
+ {name:'ふっくらリング',kind:'torus',major:3,outer:1.5,inner:0},
+ {name:'空洞の球',kind:'shell',major:0,outer:2.5,inner:1},
+ {name:'細いリング',kind:'torus',major:3.5,outer:.75,inner:0},
+ {name:'薄い球殻',kind:'shell',major:0,outer:2.5,inner:1.75},
+ {name:'空洞の輪',kind:'tube',major:3.5,outer:1.5,inner:.75},
+ {name:'大きな輪',kind:'torus',major:3,outer:2,inner:0},
+ {name:'マスター',kind:'tube',major:3.5,outer:2,inner:1}
 ];
-const S={idx:0,phase:'edit',a:{x:1.3,y:-1.4},b:{x:2.3,y:-.9},drag:null,w:0,h:0,unit:30,cx:0,cy:0,tryParams:null,win:false,cut:true,muted:false,readyTime:0,spinStart:0,editCanvas:$('editor'),ctx:$('editor').getContext('2d'),motionCanvas:$('motionView'),motionCtx:$('motionView').getContext('2d'),raf:0,seq:0};
-let unlocked=0;try{unlocked=+(localStorage.getItem('dimension-unlocked')||0)}catch(e){}
-let audio=null;
-function tone(type='tap'){
- if(S.muted)return;
- try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();let now=audio.currentTime;
- const notes=type==='win'?[523.25,659.25,783.99,1046.5]:type==='fail'?[392,523.25]:type==='open'?[440,554.37]:[587.33];
- notes.forEach((f,i)=>{let o=audio.createOscillator(),g=audio.createGain(),lp=audio.createBiquadFilter();o.type='sine';o.frequency.value=f;lp.type='lowpass';lp.frequency.value=2200;
- const t=now+(type==='win'?i*.082:i*.045),amp=type==='win'?.052:.025;
- g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(amp,t+.014);g.gain.exponentialRampToValueAtTime(.0001,t+(type==='win'?.65:.23));o.connect(lp);lp.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+(type==='win'?.72:.3));});
- }catch(e){}
+const S={needsDraw:true,level:0,phase:'edit',a:{x:1.2,y:-1},b:{x:2.2,y:-.3},drag:null,try:null,win:false,muted:false,started:0,token:0,camEase:0,lastPhase:'',p3d:0};
+const stage=$('stage'),ctx=stage.getContext('2d'),goal=$('goal'),gctx=goal.getContext('2d');
+try{S.muted=localStorage.getItem('dimension-muted')==='yes'}catch(e){}
+$('sound').classList.toggle('is-off',S.muted);
+let audio;
+function note(freq,when,duration,volume){if(S.muted)return;try{audio=audio||new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume();const t=audio.currentTime+when,osc=audio.createOscillator(),gain=audio.createGain();osc.type='sine';osc.frequency.setValueAtTime(freq,t);gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(volume,t+.012);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);osc.connect(gain);gain.connect(audio.destination);osc.start(t);osc.stop(t+duration+.025);}catch(e){}}
+function sound(type){if(type==='tap')note(392,0,.09,.014);else if(type==='turn')note(440,0,.24,.028);else if(type==='win')[[523.25,0],[659.25,.13],[783.99,.26],[1046.5,.40]].forEach(([f,t])=>note(f,t,.64,.032));else if(type==='try')note(329.63,0,.13,.017);}
+function resizeCanvas(c,cc,lim=2){let r=c.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,lim),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h}cc.setTransform(d,0,0,d,0,0);return{w:r.width,h:r.height}}
+function params(){let a=S.a,b=S.b,dx=b.x-a.x,dy=b.y-a.y,t=clamp(-(a.x*dx+a.y*dy)/Math.max(1e-9,dx*dx+dy*dy),0,1),px=a.x+dx*t,py=a.y+dy*t;return{inner:Math.hypot(px,py),outer:Math.max(Math.hypot(a.x,a.y),Math.hypot(b.x,b.y)),major:LEVELS[S.level].major}}
+const ease=t=>t*t*(3-2*t);
+function camera(w,h,outputMix){let L=LEVELS[S.level],r=Math.max(L.outer,params().outer),base=Math.min(w/8.5,h/(8.3+L.major*.18)),finish=Math.min(w/(2.6*(L.major+r+1)),h/(2.5*(L.major+r+1)));const scale=base+(finish-base)*ease(outputMix),cx=w*.5,cy=h*.455-L.major*.80*scale*ease(outputMix);return {scale,cx,cy};}
+function projection(x,y,z,cam){return{x:cam.cx+cam.scale*(.75*x+.661438*z),y:cam.cy+cam.scale*(.16*x+.97*y-.1814*z),depth:-.64*x+.24*y+.73*z}}
+function project(p,cam){return projection(p.x,p.y,p.z||0,cam)}
+function fromScreen(sx,sy,cam){let x=(sx-cam.cx)/(.75*cam.scale);return{x,y:((sy-cam.cy)/cam.scale-.16*x)/.97}}
+function path(points,c,fill,stroke,width=1){if(!points.length)return;c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();if(fill){c.fillStyle=fill;c.fill()}if(stroke){c.lineWidth=width;c.strokeStyle=stroke;c.stroke()}}
+function stroke(points,c,color,width=1,dash=[]){if(points.length<2)return;c.beginPath();points.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.strokeStyle=color;c.lineWidth=width;c.setLineDash(dash);c.stroke();c.setLineDash([])}
+function drawAxes(c,cam,L,opts={}){const strong=opts.strong||'both',o=strong==='second'?1:.6;
+ // Both axes remain literally in the same three-dimensional scene during all phases.
+ const aa=project({x:0,y:0,z:-2.15},cam),ab=project({x:0,y:0,z:2.15},cam);
+ stroke([aa,ab],c,`rgba(35,172,188,${strong==='first'?.83:.37})`,strong==='first'?2.3:1.6,[4,6]);
+ const ax=project({x:-4.0,y:L.major,z:0},cam),ay=project({x:4,y:L.major,z:0},cam);
+ stroke([ax,ay],c,`rgba(230,159,100,${strong==='second'?.19:.10})`,8);
+ stroke([ax,ay],c,`rgba(214,144,82,${strong==='second'?.96:.72})`,strong==='second'?2.6:2,[8,6]);
+ let origin=project({x:0,y:0,z:0},cam);c.beginPath();c.arc(origin.x,origin.y,6.1,0,Math.PI*2);c.fillStyle='#f0fbfb';c.fill();c.strokeStyle='#0b9cb0';c.lineWidth=2;c.stroke();c.beginPath();c.arc(origin.x,origin.y,1.9,0,7);c.fillStyle='#0b9cb0';c.fill();
+ c.font='750 11px system-ui';c.fillStyle='#148da1';c.fillText('①',ab.x+6,ab.y-8);c.fillStyle='#bd814b';c.fillText('②',ay.x-23,ay.y-10);
 }
-const shaderV='attribute vec2 aPos;varying vec2 vUv;void main(){vUv=aPos*.5+.5;gl_Position=vec4(aPos,0.,1.);}';
-const shaderF=`precision highp float;
-varying vec2 vUv;uniform vec2 uRes;uniform float uMajor,uOuter,uInner,uTime,uCut,uYaw;
-float scene(vec3 p){float rad=length(vec2(length(p.yz)-uMajor,p.x));float d=max(rad-uOuter,uInner-rad);if(uInner<.01)d=rad-uOuter;
-if(uCut>.5&&uInner>.01)d=max(d,min(p.x-.015,p.z-.015));return d;}
-vec3 normalAt(vec3 p){float e=.009;vec2 h=vec2(e,0.);return normalize(vec3(scene(p+h.xyy)-scene(p-h.xyy),scene(p+h.yxy)-scene(p-h.yxy),scene(p+h.yyx)-scene(p-h.yyx)));}
-float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
-void main(){vec2 uv=(gl_FragCoord.xy-.5*uRes)/min(uRes.x,uRes.y);
-float sz=max(1.0,uMajor+uOuter);float cy=uYaw;
-vec3 eye=vec3(2.2*sz*cos(cy),1.38*sz,2.2*sz*sin(cy));vec3 fw=normalize(-eye);vec3 rt=normalize(cross(fw,vec3(0.,1.,0.)));vec3 up=cross(rt,fw);
-vec3 rd=normalize(fw+uv.x*1.37*rt+uv.y*1.37*up);vec3 ro=eye;
-vec3 bg=mix(vec3(.037,.105,.151),vec3(.025,.071,.116),smoothstep(-.5,.5,uv.y));
-float halo=exp(-3.6*dot(uv,uv));bg+=vec3(.016,.076,.081)*halo;
-vec2 grid=floor(vUv*uRes/19.);float h=hash(grid);float star=smoothstep(.988,1.,h)*.17;bg+=vec3(star*.48,star*.79,star);
-float t=0.;float hit=0.;vec3 p=ro;
-for(int i=0;i<90;i++){p=ro+rd*t;float d=scene(p);if(d<.006*sz){hit=1.;break;}t+=max(.012*sz,d*.88);if(t>sz*8.6)break;}
-if(hit>.5){vec3 n=normalAt(p);vec3 light=normalize(vec3(-.55,.86,1.05));float ndl=max(0.,dot(n,light));vec3 view=normalize(ro-p);vec3 hv=normalize(light+view);float spec=pow(max(0.,dot(n,hv)),36.);
-float rim=pow(1.-max(0.,dot(n,view)),2.6);
-vec3 col=vec3(.035,.40,.51)*(0.48+0.53*ndl)+vec3(.11,.48,.49)*ndl*.42;
-col+=vec3(.30,.72,.73)*spec*.38;col+=vec3(.05,.34,.42)*rim;
-float isCut=step(.5,uCut)*step(.01,uInner)*(1.-smoothstep(.005*sz,.025*sz,abs(p.x-.015)))*step(.015,p.z);
-col=mix(col,vec3(.58,.82,.76),isCut*.45);
-col=pow(col,vec3(.88));col+=vec3(.027,.045,.045);
-bg=col;
+function drawStageBg(c,w,h,cam){c.clearRect(0,0,w,h);c.fillStyle='#fff';c.fillRect(0,0,w,h);
+ let grad=c.createRadialGradient(w*.49,h*.52,25,w*.49,h*.52,Math.max(w,h)*.62);grad.addColorStop(0,'rgba(223,249,246,.17)');grad.addColorStop(1,'rgba(243,247,245,0)');c.fillStyle=grad;c.fillRect(0,0,w,h);
+ c.save();c.strokeStyle='#f2f5f4';c.lineWidth=.65;const step=cam.scale;let px=cam.cx%step,py=cam.cy%step;for(let x=px;x<w;x+=step){c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke()}for(let y=py;y<h;y+=step){c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke()}c.restore();}
+function ringCoords(R,r,cam,theta=0){let outer=[],inner=[];for(let i=0;i<=72;i++){let a=i/72*Math.PI*2;for(const [rad,arr] of [[R,outer],[r,inner]]){let x=rad*Math.cos(a),y=rad*Math.sin(a),L=LEVELS[S.level],ang=theta;arr.push(project({x,y:L.major+(y-L.major)*Math.cos(ang),z:(y-L.major)*Math.sin(ang)},cam))}}return {outer,inner}}
+function drawDisk(c,cam,p,angle,opacity=1){if(opacity<=0)return;const N=64,T=8,L=LEVELS[S.level],quads=[];
+ for(let j=0;j<N;j++){let a=j/N*Math.PI*2,b=(j+1)/N*Math.PI*2;for(let k=0;k<T;k++){let ra=p.inner+(p.outer-p.inner)*k/T,rb=p.inner+(p.outer-p.inner)*(k+1)/T;let pts=[];for(let [r,t] of [[ra,a],[rb,a],[rb,b],[ra,b]]){let x=r*Math.cos(t),y=r*Math.sin(t);pts.push(project({x,y:L.major+(y-L.major)*Math.cos(angle),z:(y-L.major)*Math.sin(angle)},cam))}let dep=pts.reduce((s,v)=>s+v.depth,0)/4;quads.push({pts,dep})}}
+ quads.sort((a,b)=>a.dep-b.dep);c.save();c.globalAlpha=opacity;quads.forEach(({pts})=>path(pts,c,'#91dce1'));c.restore();let {outer,inner}=ringCoords(p.outer,p.inner,cam,angle);stroke(outer,c,`rgba(9,140,163,${.82*opacity})`,Math.max(1.2,1.9*opacity));if(p.inner>.03)stroke(inner,c,`rgba(13,140,155,${.68*opacity})`,1.4);
+ for(let a of [0,Math.PI/2,Math.PI,3*Math.PI/2]){let seg=[];for(const r of [p.inner,p.outer]){let x=r*Math.cos(a),y=r*Math.sin(a);seg.push(project({x,y:L.major+(y-L.major)*Math.cos(angle),z:(y-L.major)*Math.sin(angle)},cam))}stroke(seg,c,`rgba(12,123,144,${.17*opacity})`,1.2)}
+ let mx=0,my=p.outer,Lm=L.major;let marker=project({x:mx,y:Lm+(my-Lm)*Math.cos(angle),z:(my-Lm)*Math.sin(angle)},cam);c.beginPath();c.arc(marker.x,marker.y,4.4,0,7);c.fillStyle='#078ca5';c.fill();c.lineWidth=1.6;c.strokeStyle='#fff';c.stroke();
 }
-gl_FragColor=vec4(bg,1.);
-}`;
-function makeGL(canvas){
- let gl=canvas.getContext('webgl',{alpha:false,antialias:true,preserveDrawingBuffer:false,powerPreference:'default'});
- if(!gl)return null;
- const makeShader=(type,source)=>{let s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s};
- try{let prog=gl.createProgram();gl.attachShader(prog,makeShader(gl.VERTEX_SHADER,shaderV));gl.attachShader(prog,makeShader(gl.FRAGMENT_SHADER,shaderF));gl.linkProgram(prog);if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error('shader link');gl.useProgram(prog);let buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);let loc=gl.getAttribLocation(prog,'aPos');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);return{gl,uniform:Object.fromEntries(['uRes','uMajor','uOuter','uInner','uTime','uCut','uYaw'].map(x=>[x,gl.getUniformLocation(prog,x)]))};}
- catch(err){console.warn('3D renderer fallback',err);return null}
+// Draw the true locus of the original line; every intermediate stroke is part of the same line.
+function drawLine(c,cam,angle=0,withHandles=false){let cos=Math.cos(angle),sin=Math.sin(angle),rot=p=>project({x:p.x*cos-p.y*sin,y:p.x*sin+p.y*cos,z:0},cam),a=rot(S.a),b=rot(S.b);
+ c.save();c.lineCap='round';c.shadowColor='#0ba7b548';c.shadowBlur=12;c.lineWidth=5.7;c.strokeStyle='#0a94ab';c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.stroke();c.restore();
+ if(withHandles){for(let q of [a,b]){c.beginPath();c.arc(q.x,q.y,12,0,Math.PI*2);c.fillStyle='#fff';c.fill();c.strokeStyle='#079aad';c.lineWidth=2.6;c.stroke();c.beginPath();c.arc(q.x,q.y,3.1,0,7);c.fillStyle='#079aad';c.fill()}if(S.drag){let q=S.drag.type==='a'?a:S.drag.type==='b'?b:null;if(q){c.beginPath();c.arc(q.x,q.y,24,0,7);c.lineWidth=1.5;c.strokeStyle='#3cb9bd55';c.stroke()}}}
 }
-const goal3D=makeGL($('goalGL')),result3D=makeGL($('resultView'));
-function resizeGL(o,canvas){if(!o)return;let r=canvas.getBoundingClientRect(),d=Math.min(devicePixelRatio||1,1.32),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}o.gl.viewport(0,0,w,h)}
-const fallbackCache=new Map();
-function software3D(canvas,p,yaw,cut){
- // Small, self-contained CPU ray marcher for browsers that disable WebGL.
- // It renders the same implicit rotational solid as the GPU shader, including cutaways.
- const rw=Math.max(2,Math.round(canvas.clientWidth)),rh=Math.max(2,Math.round(canvas.clientHeight));
- if(canvas.width!==rw||canvas.height!==rh){canvas.width=rw;canvas.height=rh}
- let key=[rw,rh,p.major,p.outer,p.inner,yaw.toFixed(2),cut?1:0].join(':');
- let cached=fallbackCache.get(key);let ctx=canvas.getContext('2d');
- if(cached){ctx.putImageData(cached,0,0);return}
- const res=.76;let w=Math.round(rw*res),h=Math.round(rh*res);
- let low=document.createElement('canvas');low.width=w;low.height=h;let lc=low.getContext('2d');let image=lc.createImageData(w,h),pixels=image.data;
- let norm=(a)=>{let q=Math.hypot(a[0],a[1],a[2])||1;return[a[0]/q,a[1]/q,a[2]/q]};let dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];let cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
- let sz=Math.max(1,p.major+p.outer),eye=[2.2*sz*Math.cos(yaw),1.38*sz,2.2*sz*Math.sin(yaw)],forward=norm(eye.map(z=>-z)),right=norm(cross(forward,[0,1,0])),up=cross(right,forward),light=norm([-.55,.86,1.05]);
- let scene=(x,y,z)=>{let rad=Math.hypot(Math.hypot(y,z)-p.major,x);let d=rad-p.outer;if(p.inner>.01)d=Math.max(d,p.inner-rad);if(cut&&p.inner>.01)d=Math.max(d,Math.min(x-.015,z-.015));return d};
- let outer=sz*1.04,ro2=dot(eye,eye),minSize=Math.min(w,h),ci=0;
- for(let py=0;py<h;py++){
-  for(let px=0;px<w;px++){
-   let uvx=(px+.5-w*.5)/minSize,uvy=(h*.5-(py+.5))/minSize;
-   let dx=forward[0]+1.37*(uvx*right[0]+uvy*up[0]),dy=forward[1]+1.37*(uvx*right[1]+uvy*up[1]),dz=forward[2]+1.37*(uvx*right[2]+uvy*up[2]);
-   let inv=1/Math.hypot(dx,dy,dz);dx*=inv;dy*=inv;dz*=inv;
-   let halo=Math.exp(-3.6*(uvx*uvx+uvy*uvy)),fade=clamp(uvy+.5,0,1);
-   let R=9+7*halo+2*fade,G=26+17*halo+3*fade,B=41+18*halo+2*fade;
-   let bc=eye[0]*dx+eye[1]*dy+eye[2]*dz,disc=bc*bc-ro2+outer*outer;
-   if(disc>0){
-    let t=Math.max(0,-bc-Math.sqrt(disc)),limit=-bc+Math.sqrt(disc),hit=false,x=0,y=0,z=0;
-    for(let n=0;n<65&&t<=limit+.025*sz;n++){
-     x=eye[0]+dx*t;y=eye[1]+dy*t;z=eye[2]+dz*t;
-     let d=scene(x,y,z);
-     if(d<.0048*sz){hit=true;break}
-     t+=Math.max(.012*sz,d*.86);
-    }
-    if(hit){let e=.011*sz;
-     let nn=norm([scene(x+e,y,z)-scene(x-e,y,z),scene(x,y+e,z)-scene(x,y-e,z),scene(x,y,z+e)-scene(x,y,z-e)]);
-     let ndl=Math.max(0,dot(nn,light)),view=norm([eye[0]-x,eye[1]-y,eye[2]-z]),half=norm([view[0]+light[0],view[1]+light[1],view[2]+light[2]]),spec=Math.pow(Math.max(0,dot(nn,half)),34),rim=Math.pow(1-Math.max(0,dot(nn,view)),2.6);
-     let isCut=cut&&p.inner>.01&&(Math.abs(x-.015)<.038*sz||Math.abs(z-.015)<.038*sz);
-     let shade=.35+.65*ndl;
-     R=18*shade+20*ndl+118*spec+12*rim+8;
-     G=116*shade+48*ndl+92*spec+64*rim+16;
-     B=147*shade+45*ndl+105*spec+75*rim+23;
-     if(isCut){R=R*.7+160*.3;G=G*.7+212*.3;B=B*.7+207*.3}
-    }
-   }
-   pixels[ci++]=Math.min(255,R);pixels[ci++]=Math.min(255,G);pixels[ci++]=Math.min(255,B);pixels[ci++]=255;
-  }
- }
- lc.putImageData(image,0,0);ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(low,0,0,rw,rh);
- // Cache final full-size image so resize/other UI changes do not repeat ray marching.
- let snapshot=ctx.getImageData(0,0,rw,rh);fallbackCache.set(key,snapshot);if(fallbackCache.size>12)fallbackCache.delete(fallbackCache.keys().next().value);
+function drawSpin1(c,cam,f){const loops=54,n=Math.max(1,Math.ceil(loops*f));let a=S.a,b=S.b;
+ for(let i=0;i<n;i++){const t1=(i/loops)*Math.PI*2,t2=(Math.min((i+1)/loops,f))*Math.PI*2;let pt=(p,t)=>project({x:p.x*Math.cos(t)-p.y*Math.sin(t),y:p.x*Math.sin(t)+p.y*Math.cos(t),z:0},cam),pts=[pt(a,t1),pt(b,t1),pt(b,t2),pt(a,t2)];path(pts,c,'rgba(55,188,197,.33)')}
+ for(let k=1;k<=3;k++){let t=Math.max(0,f*2*Math.PI-k*.18),ca=Math.cos(t),sa=Math.sin(t);let pts=[a,b].map(q=>project({x:q.x*ca-q.y*sa,y:q.x*sa+q.y*ca,z:0},cam));stroke(pts,c,`rgba(13,155,181,${.1/(k*.65)})`,3)}
+ drawLine(c,cam,f*2*Math.PI,false);
 }
-function renderGL(o,canvas,p,sec,yaw,cut){if(!o){software3D(canvas,p,yaw,cut);return}resizeGL(o,canvas);let {gl,uniform:u}=o;gl.useProgram(gl.getParameter(gl.CURRENT_PROGRAM));gl.uniform2f(u.uRes,canvas.width,canvas.height);gl.uniform1f(u.uMajor,p.major);gl.uniform1f(u.uOuter,p.outer);gl.uniform1f(u.uInner,p.inner);gl.uniform1f(u.uTime,sec);gl.uniform1f(u.uCut,cut?1:0);gl.uniform1f(u.uYaw,yaw);gl.drawArrays(gl.TRIANGLES,0,6)}
-let yaw=.93, resultYaw=.93;
-function render3D(){let p=LEVELS[S.idx];renderGL(goal3D,$('goalGL'),p,0,yaw,S.cut);if(['spin2','result','win'].includes(S.phase)){renderGL(result3D,$('resultView'),{...S.tryParams,major:p.major},0,resultYaw,S.cut)}}
-function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
-function getParams(){let {a,b}=S,dx=b.x-a.x,dy=b.y-a.y,t=clamp(-(a.x*dx+a.y*dy)/Math.max(.0000001,dx*dx+dy*dy),0,1),mx=a.x+dx*t,my=a.y+dy*t;return{inner:Math.sqrt(mx*mx+my*my),outer:Math.max(Math.hypot(a.x,a.y),Math.hypot(b.x,b.y))}}
-function draw(){let canvas=S.editCanvas,ctx=S.ctx,rect=canvas.getBoundingClientRect(),w=rect.width,h=rect.height;if(!w||!h)return;let d=Math.min(devicePixelRatio||1,2);if(canvas.width!==Math.round(w*d)||canvas.height!==Math.round(h*d)){canvas.width=Math.round(w*d);canvas.height=Math.round(h*d)}ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);
- S.w=w;S.h=h;S.unit=Math.min(w/9.3,h/9.3);S.cx=w*.5;S.cy=h*.36;let sc=S.unit,cx=S.cx,cy=S.cy;
- const pos=(p)=>({x:cx+p.x*sc,y:cy+p.y*sc}),major=LEVELS[S.idx].major;
- ctx.save();ctx.lineWidth=1;ctx.strokeStyle='#eff4f7';
- for(let x=Math.ceil(-cx/sc);x<=(w-cx)/sc;x++){ctx.beginPath();ctx.moveTo(cx+x*sc,0);ctx.lineTo(cx+x*sc,h);ctx.stroke()}
- for(let y=Math.ceil(-cy/sc);y<=(h-cy)/sc;y++){ctx.beginPath();ctx.moveTo(0,cy+y*sc);ctx.lineTo(w,cy+y*sc);ctx.stroke()}
- // Guide rings are only very faint; no exact target radius is shown.
- ctx.setLineDash([2,6]);ctx.strokeStyle='#eef3f6';for(let r=1;r<=3;r++){ctx.beginPath();ctx.arc(cx,cy,r*sc,0,2*Math.PI);ctx.stroke()}ctx.restore();
- let y2=cy+major*sc;ctx.save();ctx.setLineDash([7,6]);ctx.lineWidth=2.3;ctx.strokeStyle='#e79a61';ctx.beginPath();ctx.moveTo(10,y2);ctx.lineTo(w-10,y2);ctx.stroke();ctx.restore();
- // The first axis is shown as a dot-with-ring: a physical axis pointing out of the screen.
- ctx.beginPath();ctx.arc(cx,cy,10,0,Math.PI*2);ctx.fillStyle='#e8fafb';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='#15a5bb';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,3,0,Math.PI*2);ctx.fillStyle='#15a5bb';ctx.fill();
- ctx.fillStyle='#0a8da4';ctx.font='bold 11px system-ui';ctx.fillText('①',cx+15,cy-13);
- ctx.fillStyle='#c08050';ctx.font='bold 11px system-ui';ctx.fillText('② 回転軸',w-92,y2-12);
- const pa=pos(S.a),pb=pos(S.b);
- if(S.phase==='spin1'||S.phase==='surface'){let p=getParams(),progress=S.phase==='surface'?1:clamp((performance.now()-S.spinStart)/1420,0,1),far=S.a.x*S.a.x+S.a.y*S.a.y>S.b.x*S.b.x+S.b.y*S.b.y?S.a:S.b,startAngle=Math.atan2(far.y,far.x);
- if(p.outer>.05){let end=startAngle+2*Math.PI*progress;ctx.beginPath();ctx.arc(cx,cy,p.outer*sc,startAngle,end,false);if(p.inner>.025)ctx.arc(cx,cy,p.inner*sc,end,startAngle,true);else ctx.lineTo(cx,cy);ctx.closePath();ctx.fillStyle='rgba(45,179,198,.25)';ctx.fill();ctx.lineWidth=1;ctx.strokeStyle='rgba(31,163,188,.36)';ctx.stroke()}
- let ang=2*Math.PI*progress,c=Math.cos(ang),s=Math.sin(ang),rot=p=>({x:cx+(p.x*c-p.y*s)*sc,y:cy+(p.x*s+p.y*c)*sc}),rA=rot(S.a),rB=rot(S.b);
- ctx.beginPath();ctx.moveTo(rA.x,rA.y);ctx.lineTo(rB.x,rB.y);ctx.strokeStyle='#078fac';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();return;}
- // Live preview of the theoretical swept 2D shape, faint when editing.
- if(S.phase==='edit'){let pp=getParams();ctx.beginPath();ctx.arc(cx,cy,pp.outer*sc,0,Math.PI*2);if(pp.inner>.035){ctx.moveTo(cx+pp.inner*sc,cy);ctx.arc(cx,cy,pp.inner*sc,0,Math.PI*2,true)}ctx.fillStyle='rgba(19,167,187,.055)';ctx.fill('evenodd')}
- ctx.save();ctx.lineCap='round';ctx.shadowColor='#1aa3b240';ctx.shadowBlur=13;ctx.strokeStyle='#087f9e';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(pa.x,pa.y);ctx.lineTo(pb.x,pb.y);ctx.stroke();ctx.restore();
- for(let [idx,p] of [pa,pb].entries()){ctx.beginPath();ctx.arc(p.x,p.y,idx===0?11:11,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();ctx.lineWidth=3;ctx.strokeStyle='#13a0b6';ctx.stroke();ctx.beginPath();ctx.arc(p.x,p.y,3,0,Math.PI*2);ctx.fillStyle='#13a0b6';ctx.fill()}
- if(S.drag){let p=S.drag.type==='a'?pa:S.drag.type==='b'?pb:null;if(p){ctx.beginPath();ctx.arc(p.x,p.y,22,0,Math.PI*2);ctx.strokeStyle='#55bcd05e';ctx.lineWidth=2;ctx.stroke()}}
+const light=[.65,-.86,1.2];
+function normal(x,y,z){let d=Math.hypot(x,y,z)||1;return [x/d,y/d,z/d]}
+function surfPoint(alpha,beta,R,M,inner=false){let x=R*Math.cos(alpha),y=R*Math.sin(alpha);return{x,y:M+(y-M)*Math.cos(beta),z:(y-M)*Math.sin(beta)}}
+// For each boundary circle of the actual swept disk, beta traces the second rotation.
+// At major=0, sweeping only the positive-radius semicircle avoids double rendering the sphere.
+function drawSolid(c,cam,p,frac=1,opacity=1,forGoal=false){if(frac<.001||opacity<.003)return;let R=p.outer,M=p.major, sphere=M<.001;
+ const A=forGoal?48:34,B=forGoal?54:42,aMax=sphere?Math.PI:Math.PI*2,bMax=2*Math.PI*frac,polys=[];
+ for(let i=0;i<A;i++){let a=i/A*aMax,bb=(i+1)/A*aMax;for(let j=0;j<B*frac;j++){let u=j/B*2*Math.PI,v=Math.min(bMax,(j+1)/B*2*Math.PI);if(v<=u)continue;
+ let q=[surfPoint(a,u,R,M),surfPoint(bb,u,R,M),surfPoint(bb,v,R,M),surfPoint(a,v,R,M)];let pts=q.map(P=>project(P,cam)),dep=pts.reduce((s,x)=>s+x.depth,0)/4;
+ let am=(a+bb)/2,bm=(u+v)/2;let nx=Math.cos(am),ny=(sphere?1:-1)*Math.sin(am)*Math.cos(bm),nz=(sphere?1:-1)*Math.sin(am)*Math.sin(bm);let nd=Math.max(0,(nx*light[0]+ny*light[1]+nz*light[2])/1.6),view=Math.max(0,ny*-.22+nz*.94+nx*.10),rim=Math.pow(1-view,2.2),gleam=Math.pow(Math.max(0,ny*.1+nz*.8+nx*.33),14);
+ let t=Math.min(1,.44+.45*nd+.22*view+.16*gleam-.065*rim);let rgb=forGoal?[Math.round(14+43*t),Math.round(123+93*t),Math.round(138+97*t)]:[Math.round(7+37*t),Math.round(133+88*t),Math.round(156+80*t)];
+ polys.push({pts,dep,color:`rgb(${rgb.join(',')})`})}}
+ polys.sort((a,b)=>a.dep-b.dep);c.save();c.globalAlpha=opacity;
+ for(let k of polys){path(k.pts,c,k.color,k.color,1.6)}c.restore();
+ // For hollow shapes, make the missing interior legible without opaque cross-sectional cutting.
+ if(p.inner>.01&&frac>=.999){const RR=p.inner,pts=[];for(let n=0;n<=80;n++){let a=n/80*Math.PI*2;pts.push(project({x:RR*Math.cos(a),y:RR*Math.sin(a),z:0},cam))}stroke(pts,c,forGoal?'rgba(196,251,250,.48)':'rgba(14,106,123,.32)',1.3,[3,5]);}
 }
-// Rotate a *real annular 2-D region* around the SECOND, horizontal orange axis.
-// The editor coordinates are (x,y,0); axis 2 is {(x,major,0)}.
-// Every point moves to (x, major+(y-major)*cos(t), (y-major)*sin(t)).
-// No interpolation or substitute rotation: this is precisely the transform
-// used to define the final implicit solid of revolution.
-function renderMotion(frac){
- const c=S.motionCanvas,ctx=S.motionCtx,bb=c.getBoundingClientRect(),w=bb.width,h=bb.height;if(!w||!h)return;
- const d=Math.min(devicePixelRatio||1,2),cw=Math.round(w*d),ch=Math.round(h*d);
- if(c.width!==cw||c.height!==ch){c.width=cw;c.height=ch}
- ctx.setTransform(d,0,0,d,0,0);ctx.clearRect(0,0,w,h);
- ctx.fillStyle='#fdfefe';ctx.fillRect(0,0,w,h);
- let p=S.tryParams||getParams(),major=LEVELS[S.idx].major,R=Math.max(.12,p.outer),r=p.inner;
- const scale=Math.min(w/(2.9*(major+R+0.65)),h/(2.25*(major+R+0.65)))*1.35;
- const centX=w*.50,axisY=h*.55;
- // A fixed, gently angled view lets the viewer see a flat disk turn into a 3D volume.
- const project=(x,y,z)=>({x:centX+(x*.95+z*.24)*scale,y:axisY+((y-major)*.79-z*.47)*scale});
- const onDisk=(rho,phi,t)=>{let x=rho*Math.cos(phi),y=rho*Math.sin(phi);return project(x,major+(y-major)*Math.cos(t),(y-major)*Math.sin(t))};
- function connectPts(pts,color,width=1,dash=[]){ctx.beginPath();pts.forEach((pt,i)=>i?ctx.lineTo(pt.x,pt.y):ctx.moveTo(pt.x,pt.y));ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([])}
- function ringPath(t){ctx.beginPath();for(let i=0;i<=64;i++){let q=onDisk(R,i/64*Math.PI*2,t);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)}ctx.closePath();if(r>.015){for(let i=0;i<=64;i++){let q=onDisk(r,(64-i)/64*Math.PI*2,t);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)}ctx.closePath()}}
- // Faint real swept trajectories show what is generated by rotating, not merely a final shape.
- const theta=frac*2*Math.PI, samples=Math.max(1,Math.ceil(frac*62));
- for(let j=0;j<=12;j++){
-  let phi=j*Math.PI/6,pts=[];
-  for(let k=0;k<=samples;k++)pts.push(onDisk(R,phi,k/samples*theta));
-  connectPts(pts,'rgba(21,163,187,.17)',1.05);
-  if(r>.05){let inside=[];for(let k=0;k<=samples;k++)inside.push(onDisk(r,phi,k/samples*theta));connectPts(inside,'rgba(21,163,187,.12)',.85)}
- }
- // Reference horizontal rod. Drawn independently of the disk so it never spins.
- const ax1=project(-major-R-.7,major,0),ax2=project(major+R+.7,major,0);
- connectPts([ax1,ax2],'rgba(232,152,94,.22)',10);
- connectPts([ax1,ax2],'#e89b64',2.5,[8,5]);
- // Semi-transparent successive snapshots of the actual turning disk.
- for(let j=5;j>=1;j--){let t=Math.max(0,theta-j*.15);ringPath(t);ctx.fillStyle=`rgba(52,182,204,${.022+(6-j)*.008})`;ctx.fill('evenodd');}
- ringPath(theta);ctx.fillStyle='rgba(61,188,208,.38)';ctx.fill('evenodd');ctx.strokeStyle='#078eaa';ctx.lineWidth=2.4;ctx.stroke();
- // Two diagnostic spokes: they tilt with the disk and prove rotation is about axis ②.
- for(let phi of [Math.PI/2,3*Math.PI/2]){let v0=onDisk(0,0,theta),v1=onDisk(R,phi,theta);connectPts([v0,v1],'rgba(8,129,157,.48)',1.8)}
- // A tracked boundary point and its orbit make the second rotation visible in every frame.
- let marker=onDisk(R,Math.PI/2,theta);
- ctx.beginPath();ctx.arc(marker.x,marker.y,5.6,0,2*Math.PI);ctx.fillStyle='#087f9e';ctx.fill();ctx.lineWidth=2;ctx.strokeStyle='white';ctx.stroke();
- // Axis label / circular motion arrow to the right of the generated shape.
- let axMark=project(0,major,0);ctx.fillStyle='#ba7348';ctx.font='800 12px system-ui';ctx.fillText('②',Math.min(w-27,ax2.x-22),axisY-12);
- // A ring arrow in the projected yz-plane around the fixed rod.
- let ar=[];for(let k=0;k<=24;k++){let a=-.55+k/24*1.95*Math.PI,rr=major>0?Math.min(major+R,2):Math.max(R*.92,.8);ar.push(project(0,major+rr*Math.cos(a),rr*Math.sin(a)))}
- connectPts(ar,'rgba(233,151,90,.58)',2,[4,5]);
- let tip=ar[ar.length-1],prior=ar[ar.length-3],vx=tip.x-prior.x,vy=tip.y-prior.y,len=Math.hypot(vx,vy)||1;vx/=len;vy/=len;
- ctx.beginPath();ctx.moveTo(tip.x,tip.y);ctx.lineTo(tip.x-10*vx+4*vy,tip.y-10*vy-4*vx);ctx.lineTo(tip.x-10*vx-4*vy,tip.y-10*vy+4*vx);ctx.closePath();ctx.fillStyle='#d7945c';ctx.fill();
- // Step progress: a discreet lower-edge line, separate from the geometry.
- ctx.fillStyle='#eaf0f4';ctx.fillRect(27,h-21,w-54,3);ctx.fillStyle='#16a5b7';ctx.fillRect(27,h-21,(w-54)*frac,3);
+function drawSpin2(c,cam,p,f){let t=f*2*Math.PI;
+ // All parts share the exact same orthographic camera. The volume appears from the path of the moving disk.
+ if(f>.012)drawSolid(c,cam,p,f,1);
+ for(let n=3;n>=1;n--){let t0=Math.max(0,t-n*.16);if(t0<=0)continue;let outline=ringCoords(p.outer,p.inner,cam,t0);stroke(outline.outer,c,`rgba(55,182,199,${.13/(n*.9)})`,1.3)}
+ drawDisk(c,cam,p,t,.38*clamp((1-f)/.24,0,1));
+ let y=p.outer,orbit=[];for(let k=0;k<=45*f;k++){let a=k/45*Math.PI*2;orbit.push(project({x:0,y:p.major+(y-p.major)*Math.cos(a),z:(y-p.major)*Math.sin(a)},cam))}
+ stroke(orbit,c,'rgba(214,158,96,.35)',1.35,[3,5]);
 }
-function toGamePoint(e){let r=S.editCanvas.getBoundingClientRect();return{x:(e.clientX-r.left-S.cx)/S.unit,y:(e.clientY-r.top-S.cy)/S.unit}}
-function pixelPoint(p){return{x:S.cx+p.x*S.unit,y:S.cy+p.y*S.unit}}
-function distanceSegment(point,a,b){let dx=b.x-a.x,dy=b.y-a.y,t=clamp(((point.x-a.x)*dx+(point.y-a.y)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(point.x-(a.x+t*dx),point.y-(a.y+t*dy))}
-function snapPoint(p){let dist=Math.hypot(p.x,p.y);if(dist<.19)return{x:0,y:0};let nearest=Math.round(dist*2)/2;if(Math.abs(dist-nearest)<.11&&nearest>0){let factor=nearest/dist;p={x:p.x*factor,y:p.y*factor}}return{x:clamp(p.x,-3.3,3.3),y:clamp(p.y,-3.3,3.3)}}
-S.editCanvas.addEventListener('pointerdown',e=>{if(S.phase!=='edit')return;let r=S.editCanvas.getBoundingClientRect(),point={x:e.clientX-r.left,y:e.clientY-r.top},a=pixelPoint(S.a),b=pixelPoint(S.b),da=Math.hypot(point.x-a.x,point.y-a.y),db=Math.hypot(point.x-b.x,point.y-b.y);let type=da<29&&da<=db?'a':db<29?'b':distanceSegment(point,a,b)<20?'line':null;if(!type)return;S.drag={type,start:toGamePoint(e),a:{...S.a},b:{...S.b}};S.editCanvas.setPointerCapture(e.pointerId);S.editCanvas.classList.add('grabbing');e.preventDefault();tone('tap')});
-S.editCanvas.addEventListener('pointermove',e=>{if(!S.drag)return;let p=toGamePoint(e),q=S.drag;if(q.type==='line'){let dx=p.x-q.start.x,dy=p.y-q.start.y;let a={x:q.a.x+dx,y:q.a.y+dy},b={x:q.b.x+dx,y:q.b.y+dy};let minX=Math.min(a.x,b.x),maxX=Math.max(a.x,b.x),minY=Math.min(a.y,b.y),maxY=Math.max(a.y,b.y);let corrX=minX< -3.3?-3.3-minX:maxX>3.3?3.3-maxX:0,corrY=minY< -3.3?-3.3-minY:maxY>3.3?3.3-maxY:0;S.a={x:a.x+corrX,y:a.y+corrY};S.b={x:b.x+corrX,y:b.y+corrY}}
- else S[q.type]=snapPoint(p);draw();e.preventDefault()});
-for(let ev of ['pointerup','pointercancel','lostpointercapture'])S.editCanvas.addEventListener(ev,()=>{S.drag=null;S.editCanvas.classList.remove('grabbing');draw()});
-// Drag either 3D view horizontally to inspect the goal/result.
-function installOrbit(el,isGoal){let initial=null;el.addEventListener('pointerdown',e=>{initial=e.clientX;el.setPointerCapture(e.pointerId)});el.addEventListener('pointermove',e=>{if(initial==null)return;let dx=e.clientX-initial;initial=e.clientX;if(isGoal)yaw+=dx*.009;else resultYaw+=dx*.009;render3D()});for(let ev of ['pointerup','pointercancel','lostpointercapture'])el.addEventListener(ev,()=>initial=null)}
-installOrbit($('goalGL'),true);installOrbit($('resultView'),false);
-function setBubble(label,win){let b=$('resultBubble');b.textContent=label;b.className='resultBubble show'+(win?' win':'')}
-function renderProgress(){let el=$('progress');el.innerHTML='';LEVELS.forEach((_,i)=>{let v=document.createElement('i');if(i<=S.idx)v.classList.add('on');el.append(v)});$('levelLabel').textContent='LEVEL '+String(S.idx+1).padStart(2,'0')+' / '+LEVELS.length;$('levelCounter').textContent=String(S.idx+1).padStart(2,'0')+' / '+LEVELS.length}
-function display(){
- const isEdit=S.phase==='edit',anim=['spin1','surface','spin2'].includes(S.phase),win=S.phase==='win',sweep=S.phase==='spin2';
- $('work').classList.toggle('showResult',S.phase==='result'||win);
- $('work').classList.toggle('showMotion',sweep);
- $('work').classList.toggle('playing',anim);
- $('mainBtn').disabled=anim;$('btnIcon').textContent=win?'✓':isEdit?'↻':anim?'◌':'↶';$('btnText').textContent=win?'次のステージへ':isEdit?'回してみる':anim?'回転中…':'↶ 線を直す';$('backBtn').hidden=isEdit||anim||win;
- $('phaseName').textContent=isEdit?'01 — LINE':S.phase==='spin1'||S.phase==='surface'?'02 — 1D → 2D':'03 — 2D → 3D';
- $('workName').textContent=isEdit?'線を置こう':S.phase==='spin1'||S.phase==='surface'?'① 点のまわりを回転':'② オレンジの線で回転';
- $('axisText').textContent=S.phase==='spin1'?'① 水色の点を中心に、線がぐるっと回る':S.phase==='surface'?'面ができた！ 次はオレンジの線で回そう':'② オレンジの線を固定して、面が回転';
- $('workFooter').textContent='● 両端を動かす　／　線をつかんで移動';
- $('cutBtn').hidden=LEVELS[S.idx].inner<.01&&!((S.phase==='result'||win)&&S.tryParams?.inner>.01);$('cutBtn').textContent=S.cut?'断面を閉じる':'断面を見る';$('replay').style.display=S.phase==='result'||win?'block':'none';
- renderProgress();draw();render3D();if(sweep)renderMotion(clamp((performance.now()-S.spinStart)/2550,0,1));
+function stageDraw(now){const active=['spin1','hold','spin2'].includes(S.phase);if(!active&&!S.needsDraw){requestAnimationFrame(stageDraw);return;}S.needsDraw=false;let {w,h}=resizeCanvas(stage,ctx);const L=LEVELS[S.level],p=S.try||params();let f=0;
+ if(S.phase==='spin1'){f=clamp((now-S.started)/1600,0,1);if(f===1){S.phase='hold';S.started=now;setText();sound('turn')}}
+ if(S.phase==='hold'&&now-S.started>570){S.phase='spin2';S.started=now;setText()}
+ if(S.phase==='spin2'){f=clamp((now-S.started)/2700,0,1);if(f===1){S.phase=S.win?'win':'result';S.started=now;S.camEase=1;setText();if(S.win){sound('win');confetti()}else sound('try')}}
+ let mix=S.phase==='spin2'?ease(clamp((now-S.started)/2050,0,1)):['result','win'].includes(S.phase)?1:0;
+ let cam=camera(w,h,mix);S.cam=cam;drawStageBg(ctx,w,h,cam);
+ if(S.phase==='edit'){drawAxes(ctx,cam,L,{strong:'first'});drawLine(ctx,cam,0,true)}
+ else if(S.phase==='spin1'){drawAxes(ctx,cam,L,{strong:'first'});drawSpin1(ctx,cam,f)}
+ else if(S.phase==='hold'){drawAxes(ctx,cam,L,{strong:'first'});drawDisk(ctx,cam,p,0,.54)}
+ else if(S.phase==='spin2'){drawAxes(ctx,cam,L,{strong:'second'});drawSpin2(ctx,cam,p,f)}
+ else{drawAxes(ctx,cam,L,{strong:'second'});drawSolid(ctx,cam,p,1,.99)}
+ requestAnimationFrame(stageDraw);
 }
-function startLevel(n){++S.seq;S.idx=(n+LEVELS.length)%LEVELS.length;S.phase='edit';S.win=false;S.cut=LEVELS[S.idx].inner>.01;let p=LEVELS[S.idx];S.a={x:Math.min(2.1,p.outer*.65+.4),y:-1.3};S.b={x:Math.min(2.9,p.outer*.9+.7),y:-.65};$('resultBubble').className='resultBubble';S.tryParams=null;display()}
-function animateRotation(replay=false){
- let token=++S.seq;
- S.phase='spin1';S.spinStart=performance.now();$('resultBubble').className='resultBubble';tone('open');display();
- const loop1=()=>{
-  if(S.seq!==token||S.phase!=='spin1')return;
-  draw();if(performance.now()-S.spinStart<1420)requestAnimationFrame(loop1);
-  else{S.phase='surface';display();setTimeout(()=>{
-   if(S.seq!==token||S.phase!=='surface')return;
-   S.phase='spin2';S.spinStart=performance.now();tone('open');display();requestAnimationFrame(loop2);
-  },670)}
- };
- const loop2=()=>{
-  if(S.seq!==token||S.phase!=='spin2')return;
-  const elapsed=performance.now()-S.spinStart,frac=clamp(elapsed/2550,0,1);
-  renderMotion(frac);
-  if(frac<1)requestAnimationFrame(loop2);
-  else{S.phase=S.win?'win':'result';setBubble(S.win?'ぴったり！ 立体が完成 ✨':'おしい！ 形を見比べよう',S.win);
-   if(S.win){if(!replay){tone('win');burst()}if(S.idx>=unlocked){unlocked=Math.min(LEVELS.length-1,S.idx+1);try{localStorage.setItem('dimension-unlocked',String(unlocked))}catch(e){}}}
-   else if(!replay)tone('fail');display();}
- };
- requestAnimationFrame(loop1)
+function drawGoal(){let {w,h}=resizeCanvas(goal,gctx,1.7);gctx.clearRect(0,0,w,h);const L=LEVELS[S.level],scale=Math.min(h/(2.32*(L.major+L.outer+.25)),w/(2.6*(L.major+L.outer+.3)))*(L.major>.01?.98:1.07);
+ let cam={scale,cx:w*.63,cy:h*(L.major>.01?.47:.53)-L.major*.9*scale};drawSolid(gctx,cam,L,1,.99,true);
+ 
 }
-function launch(){if(S.phase!=='edit')return;S.tryParams=getParams();let p=LEVELS[S.idx],err=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner));S.win=err<.165;animateRotation()}
-function burst(){let host=$('work');for(let i=0;i<25;i++){let el=document.createElement('div');el.className='spark';el.style.left='50%';el.style.top='45%';el.style.background=i%3===0?'#f2c17a':i%3===1?'#35b9cb':'#77ddd2';let a=i*2.4,s=40+Math.random()*130;el.style.setProperty('--dx',Math.cos(a)*s+'px');el.style.setProperty('--dy',Math.sin(a)*s+'px');host.append(el);setTimeout(()=>el.remove(),900)}}
-function revert(){++S.seq;S.phase='edit';S.win=false;$('resultBubble').className='resultBubble';display()}
-$('mainBtn').onclick=()=>{if(S.phase==='edit')launch();else if(S.phase==='win')startLevel(S.idx+1);else if(S.phase==='result')revert()};$('backBtn').onclick=revert;
-$('helpBtn').onclick=()=>{$('help').classList.add('open');tone('open')};$('helpClose').onclick=()=>$('help').classList.remove('open');$('soundBtn').onclick=()=>{S.muted=!S.muted;$('soundBtn').textContent=S.muted?'♩':'♫'};
-$('cutBtn').onclick=()=>{S.cut=!S.cut;display()};$('replay').onclick=()=>{if(!S.tryParams)return;const p=LEVELS[S.idx];S.win=Math.max(Math.abs(S.tryParams.outer-p.outer),Math.abs(S.tryParams.inner-p.inner))<.165;animateRotation(true)};
-// Tap progress indicators to preview any lesson; avoids locking test content.
-$('progress').addEventListener('click',e=>{let el=e.target.closest('i');if(!el)return;let n=Array.from($('progress').children).indexOf(el);if(n<0)return;tone('tap');startLevel(n)});$('progress').style.cursor='pointer';
-window.addEventListener('resize',()=>{draw();render3D();if(S.phase==='spin2')renderMotion(clamp((performance.now()-S.spinStart)/2550,0,1))});document.addEventListener('visibilitychange',()=>{if(!document.hidden){draw();render3D()}});
-startLevel(0);setTimeout(()=>{draw();render3D()},130);
+function setText(){S.needsDraw=true;let x=S.phase,edit=x==='edit',first=x==='spin1',hold=x==='hold',second=x==='spin2',win=x==='win';
+ $('phaseSmall').textContent=edit?'01 / LINE':first||hold?'02 / SURFACE':second?'03 / SOLID':'COMPLETE';
+ $('phaseTitle').textContent=edit?'線を置こう':first?'① 線が面になる':hold?'面ができた':second?'② 面が立体になる':win?'ぴったり！':'あと少し！';
+ $('tag1').classList.toggle('on',first||hold||edit);$('tag2').classList.toggle('on',second||x==='result'||win);
+ $('workFooter').classList.toggle('hidden',!edit);
+ $('main').textContent=edit?'↻   回してみる':first||hold||second?'回転中…':win?'次のステージへ  →':'↶  線を直す';
+ $('main').disabled=first||hold||second;$('back').hidden=edit||first||hold||second||win;
+ $('replay').classList.toggle('show',x==='result'||win);
+ $('resultTag').className='resultTag'+(x==='result'||win?' show':'')+(win?' win':'');$('resultTag').textContent=win?'完成！ すばらしい ✦':'惜しい！ もう一度';
+}
+function updateProgress(){let p=$('progress');p.innerHTML='';for(let i=0;i<LEVELS.length;i++){const el=document.createElement('i');if(i<=S.level)el.classList.add('on');if(i===S.level)el.classList.add('active');el.addEventListener('click',()=>startLevel(i));p.appendChild(el)}
+ $('goalCount').textContent='LEVEL '+String(S.level+1).padStart(2,'0')+' / '+LEVELS.length;$('count').textContent=String(S.level+1).padStart(2,'0')+' / '+LEVELS.length;
+ $('shapeType').textContent=LEVELS[S.level].inner>.01?'HOLLOW':LEVELS[S.level].major>.01?'RING':'SOLID';}
+function startLevel(n){S.token++;S.level=(n+LEVELS.length)%LEVELS.length;S.phase='edit';S.try=null;S.win=false;S.a={x:Math.min(2.4,LEVELS[S.level].outer*.6+.45),y:-1.4};S.b={x:Math.min(2.9,LEVELS[S.level].outer*.92+.5),y:-.75};$('resultTag').className='resultTag';updateProgress();drawGoal();setText()}
+function confetti(){const w=$('work');for(let i=0;i<29;i++){let e=document.createElement('span');e.className='confetti';e.style.left=(37+Math.random()*27)+'%';e.style.top=(37+Math.random()*20)+'%';e.style.background=i%4===0?'#e6b47d':i%3===0?'#abd9d8':'#20afba';e.style.setProperty('--dx',Math.round((Math.random()-.5)*250)+'px');e.style.setProperty('--dy',Math.round((Math.random()-.5)*250)+'px');w.appendChild(e);setTimeout(()=>e.remove(),870)}}
+function play(replay=false){S.try=params();let L=LEVELS[S.level];S.win=Math.abs(S.try.outer-L.outer)<=.23&&Math.abs(S.try.inner-L.inner)<=.23;S.phase='spin1';S.started=performance.now();$('resultTag').className='resultTag';sound('turn');setText()}
+const localPoint=e=>{let r=stage.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}};
+const close=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+function lineDist(p,a,b){let dx=b.x-a.x,dy=b.y-a.y,t=clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/(dx*dx+dy*dy||1),0,1);return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy)}
+function snap(p){let rr=Math.hypot(p.x,p.y);if(rr<.17)return{x:0,y:0};let target=Math.round(rr*2)/2;if(Math.abs(rr-target)<.09){p.x*=target/rr;p.y*=target/rr}return{x:clamp(p.x,-3.25,3.25),y:clamp(p.y,-3.25,3.25)}}
+stage.addEventListener('pointerdown',e=>{if(S.phase!=='edit')return;let screen=localPoint(e),a=project(S.a,S.cam),b=project(S.b,S.cam),da=close(screen,a),db=close(screen,b),type=da<32&&da<=db?'a':db<32?'b':lineDist(screen,a,b)<22?'line':null;if(!type)return;S.drag={type,start:fromScreen(screen.x,screen.y,S.cam),a:{...S.a},b:{...S.b}};stage.setPointerCapture(e.pointerId);stage.classList.add('dragging');sound('tap');e.preventDefault()});
+stage.addEventListener('pointermove',e=>{if(!S.drag)return;let s=localPoint(e),p=fromScreen(s.x,s.y,S.cam),d=S.drag;
+ if(d.type==='line'){let dx=p.x-d.start.x,dy=p.y-d.start.y;let aa={x:d.a.x+dx,y:d.a.y+dy},bb={x:d.b.x+dx,y:d.b.y+dy};let ox=Math.min(aa.x,bb.x)<-3.25?-3.25-Math.min(aa.x,bb.x):Math.max(aa.x,bb.x)>3.25?3.25-Math.max(aa.x,bb.x):0;let oy=Math.min(aa.y,bb.y)<-3.25?-3.25-Math.min(aa.y,bb.y):Math.max(aa.y,bb.y)>3.25?3.25-Math.max(aa.y,bb.y):0;S.a={x:aa.x+ox,y:aa.y+oy};S.b={x:bb.x+ox,y:bb.y+oy}}
+ else S[d.type]=snap(p);S.needsDraw=true;e.preventDefault()});
+for(let event of ['pointerup','pointercancel','lostpointercapture'])stage.addEventListener(event,()=>{S.drag=null;S.needsDraw=true;stage.classList.remove('dragging')});
+$('main').addEventListener('click',()=>{if(S.phase==='edit')play();else if(S.phase==='win')startLevel(S.level+1);else if(S.phase==='result'){S.phase='edit';S.try=null;S.win=false;setText();sound('tap')}});
+$('back').addEventListener('click',()=>{S.phase='edit';S.try=null;S.win=false;setText();sound('tap')});
+$('replay').addEventListener('click',()=>play(true));
+$('sound').addEventListener('click',()=>{S.muted=!S.muted;try{localStorage.setItem('dimension-muted',S.muted?'yes':'no')}catch(e){}$('sound').classList.toggle('is-off',S.muted);if(!S.muted)sound('tap')});
+$('helpBtn').addEventListener('click',()=>{$('help').classList.add('open');sound('tap')});$('helpClose').addEventListener('click',()=>{$('help').classList.remove('open');sound('tap')});
+window.addEventListener('resize',()=>{S.needsDraw=true;drawGoal()});
+startLevel(0);requestAnimationFrame(stageDraw);
 })();
 </script>
 </body>
